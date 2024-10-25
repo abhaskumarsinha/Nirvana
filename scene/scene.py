@@ -197,6 +197,7 @@ class Scene:
 
         # Handle materials rendering if needed
         if render_materials:
+            # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             raise NotImplementedError('Material rendering is a work in progress!')
 
         # Set plot limits and labels
