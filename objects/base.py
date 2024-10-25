@@ -10,7 +10,7 @@ class Object3D:
         :param centroid: The centroid (center) of the object.
         :param material: (Optional) A material object (instance of BaseMaterial or derived class).
         """
-        self.centroid = np.mean(vertices, axis=0).reshape(1, 3)
+        self.centroid = np.mean(vertices, axis=0)
         self.vertices = np.array(vertices, dtype=np.float64)  - self.centroid # Ensure precision
         self.faces = np.array(faces)
         self.tangents = None
