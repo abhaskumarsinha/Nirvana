@@ -9,6 +9,10 @@ from Nirvana.objects.base import *
 
 class Scene:
     def __init__(self):
+        self.Camera = Camera
+        self.Object3D = Object3D
+        self.LightSource = LightSource
+
         self.cameras = {}
         self.objects = {}
         self.lights = {}
@@ -20,11 +24,11 @@ class Scene:
         return V / np.linalg.norm(V)
 
     def register_object(self, obj, name):
-        if isinstance(obj, Camera):
+        if isinstance(obj, self.Camera):
             self.cameras[name] = obj
-        elif isinstance(obj, Object3D):
+        elif isinstance(obj, self.Object3D):
             self.objects[name] = obj
-        elif isinstance(obj, LightSource):
+        elif isinstance(obj, self.LightSource):
             self.lights[name] = obj
         else:
             raise Exception('`register_object(name)` requires `name` to be subclass of `Camera`, `LightSource` or `Object3D`. Provided: ', obj)
