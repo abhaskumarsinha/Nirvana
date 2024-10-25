@@ -6,6 +6,7 @@ import imageio
 from Nirvana.camera.camera import *
 from Nirvana.lights.light import *
 from Nirvana.objects.base import *
+from Nirvana.utils import *
 
 class Scene:
     def __init__(self):
