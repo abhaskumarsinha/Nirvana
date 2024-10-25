@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import imageio
 
-from Nirvana.camera.camera import Camera
+from Nirvana.camera.camera import *
+from Nirvana.lights.light import *
+from Nirvana.objects.base import *
 
 class Scene:
     def __init__(self):
