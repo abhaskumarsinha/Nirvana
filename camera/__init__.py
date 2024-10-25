@@ -1,1 +1,1 @@
-from Nirvana.camera import camera
+from Nirvana.camera import Camera
