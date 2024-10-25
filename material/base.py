@@ -1,7 +1,13 @@
 import numpy as np
+import imageio
 
 class BaseMaterial:
-    def __init__(self, diffuse_path, normal_path=None, ao_path=None, roughness_path=None, metallic_path=None):
+    def __init__(self, diffuse_path, 
+                 normal_path=None, 
+                 ao_path=None, 
+                 roughness_path=None, 
+                 metallic_path=None, 
+                 uv_map=None):
         """
         Initialize the BaseMaterial class with the required diffusion texture
         and optional normal, ambient occlusion, roughness, and metallic textures.
@@ -11,6 +17,7 @@ class BaseMaterial:
         :param ao_path: Path to the ambient occlusion (AO) texture file (optional).
         :param roughness_path: Path to the roughness texture file (optional).
         :param metallic_path: Path to the metallic texture file (optional).
+        :param uv_map: Optional list of UV coordinates. Defaults to [(0, 1), (0, 0), (1, 0)].
         """
         # Load diffusion texture (required)
         self.diffuse_texture = self._load_texture(diffuse_path)
@@ -37,6 +44,9 @@ class BaseMaterial:
         if metallic_path:
             self.metallic_texture = self._load_texture(metallic_path)
             self._validate_texture(self.metallic_texture)
+
+        # Set the UV map, defaulting to specified coordinates if not provided
+        self.uv_map = uv_map if uv_map is not None else [(0, 1), (0, 0), (1, 0)]
 
     def _load_texture(self, texture_path):
         """
@@ -105,3 +115,10 @@ class BaseMaterial:
         :return: Metallic texture as a numpy array, or None if not set.
         """
         return self.metallic_texture
+
+    def get_uv_map(self):
+        """
+        Get the UV mapping coordinates.
+        :return: List of UV coordinates.
+        """
+        return self.uv_map
