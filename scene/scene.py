@@ -11,7 +11,7 @@ class Scene:
         self.objects = {}
         self.lights = {}
 
-        self.cameras['_globalCamera'] = camera.Camera()
+        self.cameras['_globalCamera'] = Camera()
     
     def _compute_view_vector(self, P):
         V = -P  # Camera is at (0, 0, 0), so view vector is -P
