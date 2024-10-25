@@ -130,15 +130,11 @@ class Scene:
                wireframe_color = (0,0,0),
                draw_solid_face = True,
                render_materials = False):
-        # TEMP!! THIS WOULD GET REMOVED IN NEAR FUTURE!!
-        # texture = imageio.imread('texture.jpg') / 255.0
-        # View direction (camera looking along Z-axis)
-        V = np.array([0.0, 0.0, 1.0])
 
         focal_length, d = self.active_camera.f, self.active_camera.d
 
-        objects = [obj for name, obj in scene.objects.items()]
-        lights = [obj for name, obj in scene.lights.items()]
+        objects = [obj for name, obj in self.objects.items()]
+        lights = [obj for name, obj in self.lights.items()]
 
         coordinates = objects[0].get_vertices()[objects[0].get_faces()]
         tangents = objects[0].get_tangents()
@@ -180,11 +176,6 @@ class Scene:
         # Clip the total light intensity to be in the range [0, 1]
         sorted_light_intensity = np.clip(sorted_light_intensity, 0, 1)
 
-        # Step 1: Extract orientations
-        orientations = np.array([light.orientation.reshape(1, 3) for light in lights])
-
-        # Step 2: Compute the average orientation
-        average_orientation = np.mean(orientations, axis=-1)
 
 
         # Create a figure and axis for plotting
@@ -192,19 +183,9 @@ class Scene:
 
         if draw_solid_face:
             # Loop through each face and plot it
-            for face, light_value, tangents, face_pos in zip(sorted_vertices, sorted_light_intensity, sorted_tangents, sorted_face_pos):
-                # Calculate face lighting values
-                metallic = 0.3
-                roughness = 0.9
-                facecolor = cook_torrance_brdf(tangents,
-                                               _compute_view_vector(face_pos),
-                                               lights[0].orientation,
-                                               np.array([0.8, 0.8, 0.8]), # Base color as white?
-                                               metallic,
-                                               roughness,
-                                               lights[0].color)
+            for face, light_value in zip(sorted_vertices, sorted_light_intensity):
                 # Create a polygon patch for the current face
-                polygon = patches.Polygon(face, closed=True, facecolor=(facecolor[0], facecolor[1], facecolor[2]), alpha=1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(face[0], face[1], face[2]), alpha=1)
                 ax.add_patch(polygon)
         if show_wireframes:
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
@@ -212,23 +193,7 @@ class Scene:
                 polygon = patches.Polygon(face, closed=True, edgecolor=wireframe_color, facecolor=(light_value[0], light_value[1], light_value[2]), alpha=1)
                 ax.add_patch(polygon)
         if render_materials:
-            for face, light_value, tangent in zip(sorted_vertices, sorted_light_intensity, sorted_tangents):
-                # UV value and Texture WILL GET REMOVED AFTER IMPLEMENTING MATERIALS!
-                #render_textured_face(face, np.array([[0, 0], [1, 0], [0, 1]]), texture, light_value, ax, pixel_density = 15)
-                metallic = 0.3
-                roughness = 0.6
-
-                render_textured_face(face,
-                                     np.array([[0, 0], [1, 0], [0, 1]]),
-                                     texture,
-                                     light_value,
-                                     tangent.reshape(1, 3),
-                                     np.array([0, 0, -1]),
-                                     light_direction = average_orientation,
-                                     metallic = metallic,
-                                     roughness = roughness,
-                                     ax = ax,
-                                     pixel_density = 10)
+            raise Exception('Work in progress!')
 
         # Set limits and labels
         ax.set_xlim(-10, 10)
