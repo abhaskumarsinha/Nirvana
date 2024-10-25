@@ -4,7 +4,6 @@ import numpy as np
 class Cube(Object3D):
     def __init__(self, x=0, y=0, z=5, edge_length=1):
         # Save the position as the centroid of the cube
-        self.centroid = np.array([x, y, z])
         self.edge_length = edge_length
 
         # Generate vertices at the origin
@@ -14,7 +13,7 @@ class Cube(Object3D):
         faces = self._generate_faces()
 
         # Initialize the Cube by passing vertices and faces to the base class
-        super().__init__(vertices, faces, self.centroid)
+        super().__init__(vertices, faces)
 
     def _generate_vertices(self):
         # Half the edge length for calculating the offsets from the center
