@@ -46,7 +46,7 @@ class BaseMaterial:
             self._validate_texture(self.metallic_texture)
 
         # Set the UV map, defaulting to specified coordinates if not provided
-        self.uv_map = uv_map if uv_map is not None else [(0, 1), (0, 0), (1, 0)]
+        self.uv_map = uv_map if uv_map is not None else np.array([(0, 1), (0, 0), (1, 0)])
 
     def _load_texture(self, texture_path):
         """
