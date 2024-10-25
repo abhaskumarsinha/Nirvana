@@ -1,1 +1,2 @@
-from Nirvana.objects import base, cube
+from Nirvana.objects.base import *
+from Nirvana.objects.cube import *
