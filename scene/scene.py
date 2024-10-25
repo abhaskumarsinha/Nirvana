@@ -158,7 +158,6 @@ class Scene:
         # Step 3: Reorder the vertices and tangents based on the sorted indices
         sorted_vertices = vertices[sorted_indices]  # Sorted based on Z-buffering
         sorted_tangents = tangents[sorted_indices]
-        sorted_face_pos = np.mean(coordinates[sorted_indices], axis=1)
 
         # Step 4: Recalculate light intensity with sorted tangents
         # Initialize sorted_light_intensity as zero for accumulation
@@ -177,7 +176,6 @@ class Scene:
         sorted_light_intensity = np.clip(sorted_light_intensity, 0, 1)
 
 
-
         # Create a figure and axis for plotting
         fig, ax = plt.subplots()
 
@@ -185,7 +183,7 @@ class Scene:
             # Loop through each face and plot it
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
                 # Create a polygon patch for the current face
-                polygon = patches.Polygon(face, closed=True, facecolor=(face[0], face[1], face[2]), alpha=1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(light_value[0], light_value[1], light_value[2]), alpha=1)
                 ax.add_patch(polygon)
         if show_wireframes:
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
