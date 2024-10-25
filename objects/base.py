@@ -1,5 +1,7 @@
 import numpy as np
 
+from nirvana.material.base import *
+
 class Object3D:
     def __init__(self, vertices, faces, material=None):
         """
@@ -10,6 +12,7 @@ class Object3D:
         :param centroid: The centroid (center) of the object.
         :param material: (Optional) A material object (instance of BaseMaterial or derived class).
         """
+        self.MaterialClass = BaseMaterial
         self.centroid = np.mean(vertices, axis=0)
         self.vertices = np.array(vertices, dtype=np.float64)  - self.centroid # Ensure precision
         self.faces = np.array(faces)
@@ -22,7 +25,7 @@ class Object3D:
 
         :param material: A material object (instance of BaseMaterial or derived class).
         """
-        if not isinstance(material, BaseMaterial):
+        if not isinstance(material, self.MaterialClass):
             raise TypeError("Material must be an instance of BaseMaterial or its subclasses.")
         self.material = material
 
