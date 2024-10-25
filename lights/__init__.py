@@ -1,1 +1,1 @@
-from Nirvana.lights import light
+from Nirvana.lights.light import *
