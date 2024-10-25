@@ -136,9 +136,13 @@ class Scene:
         objects = list(self.objects.values())
         lights = list(self.lights.values())
 
-        # Get vertices and tangents for all objects
+        # Get vertices, tangents and object indices for all objects
         all_vertices = np.concatenate([obj.get_vertices()[obj.get_faces()] for obj in objects], axis=0)
         all_tangents = np.concatenate([obj.get_tangents() for obj in objects], axis=0)
+        object_indices = np.concatenate([
+            np.full(obj.get_vertices()[obj.get_faces()].shape[0], i) for i, obj in enumerate(objects)
+        ])
+
 
         # Calculate the average Z-coordinate for each face
         avg_z_coordinates = np.mean(all_vertices[:, :, 2], axis=1)
@@ -158,6 +162,7 @@ class Scene:
         # Reorder vertices and tangents based on sorted indices
         sorted_vertices = vertex_2d[sorted_indices]
         sorted_tangents = all_tangents[sorted_indices]
+        sorted_object_indices = object_indices[sorted_indices]
 
         # Initialize light intensity accumulator
         sorted_light_intensity = np.zeros((sorted_tangents.shape[0], 3))
