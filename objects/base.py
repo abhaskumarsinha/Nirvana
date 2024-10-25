@@ -12,7 +12,7 @@ class Object3D:
         """
         self.vertices = np.array(vertices, dtype=np.float64)  # Ensure precision
         self.faces = np.array(faces)
-        self.centroid = np.array(centroid, dtype=np.float64)
+        self.centroid = np.array(centroid, dtype=np.float64) + np.mean(self.vertices, axis=0).reshape(1, 3)
         self.tangents = None
         self.material = material  # Optional material object
 
