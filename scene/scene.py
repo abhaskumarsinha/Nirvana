@@ -125,82 +125,82 @@ class Scene:
 
         return projected_vertices
 
+    def render(self, show_wireframes=True,
+               wireframe_color=(0, 0, 0),
+               draw_solid_faces=True,
+               render_materials=False):
 
-    def render(self, show_wireframes = True,
-               wireframe_color = (0,0,0),
-               draw_solid_face = True,
-               render_materials = False):
+        focal_length, distance = self.active_camera.f, self.active_camera.d
 
-        focal_length, d = self.active_camera.f, self.active_camera.d
+        # Collect all objects and lights in the scene
+        objects = list(self.objects.values())
+        lights = list(self.lights.values())
 
-        objects = [obj for name, obj in self.objects.items()]
-        lights = [obj for name, obj in self.lights.items()]
+        # Get vertices and tangents for all objects
+        all_vertices = np.concatenate([obj.get_vertices()[obj.get_faces()] for obj in objects], axis=0)
+        all_tangents = np.concatenate([obj.get_tangents() for obj in objects], axis=0)
 
-        coordinates = objects[0].get_vertices()[objects[0].get_faces()]
-        tangents = objects[0].get_tangents()
-        for i in range(1, len(objects)):
-            coordinates = np.concatenate((coordinates, objects[i].get_vertices()[objects[i].get_faces()]), axis=0)
-            tangents = np.concatenate((tangents, objects[i].get_tangents()), axis=0)
+        # Calculate the average Z-coordinate for each face
+        avg_z_coordinates = np.mean(all_vertices[:, :, 2], axis=1)
 
-        # Step 1: Calculate the average Z-coordinate for each face
-        z_avg = np.mean(coordinates[:, :, 2], axis=1)  # Shape: (num_faces,)
-
-        # Apply prespective projection if applicable.
+        # Apply perspective projection if focal length is provided
         if focal_length is not None:
-            coordinates_post_projection = self.perspective_projection(coordinates, focal_length, d)
+            projected_coordinates = self.perspective_projection(all_vertices, focal_length, distance)
+        else:
+            projected_coordinates = all_vertices  # Use original vertices if no projection
 
-        # Drop the last axis (z-coordinates) to get shape (number of faces, 4, 2)
-        vertices =  coordinates_post_projection[:, :, :2]  # This keeps only the x and y coordinates
+        # Keep only the x and y coordinates
+        vertex_2d = projected_coordinates[:, :, :2]
 
-        # Step 2: Sort indices based on the average Z-coordinate (from farthest to nearest)
-        sorted_indices = np.argsort(z_avg)[::-1]
+        # Sort indices based on the average Z-coordinate (from farthest to nearest)
+        sorted_indices = np.argsort(avg_z_coordinates)[::-1]
 
-        # Step 3: Reorder the vertices and tangents based on the sorted indices
-        sorted_vertices = vertices[sorted_indices]  # Sorted based on Z-buffering
-        sorted_tangents = tangents[sorted_indices]
+        # Reorder vertices and tangents based on sorted indices
+        sorted_vertices = vertex_2d[sorted_indices]
+        sorted_tangents = all_tangents[sorted_indices]
 
-        # Step 4: Recalculate light intensity with sorted tangents
-        # Initialize sorted_light_intensity as zero for accumulation
-        sorted_light_intensity = np.zeros((sorted_tangents.shape[0], 3))  # Shape: (num_faces, 1)
+        # Initialize light intensity accumulator
+        sorted_light_intensity = np.zeros((sorted_tangents.shape[0], 3))
 
+        # Calculate light intensity for each light source
         for light in lights:
-            # Calculate the light intensity for the current light
             light_orientation = light.orientation.reshape(1, 3)  # Shape (1, 3)
             current_light_intensity = np.einsum('bi, ji -> bj', sorted_tangents, light_orientation)
 
-            # Normalize intensity and add to the total intensity
+            # Normalize intensity and accumulate light contributions
             current_light_intensity = current_light_intensity / 2 + 0.5  # Normalize to [0, 1]
-            sorted_light_intensity += light.color * current_light_intensity  # Sum intensities from all lights
+            sorted_light_intensity += light.color * current_light_intensity
 
         # Clip the total light intensity to be in the range [0, 1]
         sorted_light_intensity = np.clip(sorted_light_intensity, 0, 1)
 
-
         # Create a figure and axis for plotting
         fig, ax = plt.subplots()
 
-        if draw_solid_face:
-            # Loop through each face and plot it
+        # Draw solid faces if requested
+        if draw_solid_faces:
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
-                # Create a polygon patch for the current face
-                polygon = patches.Polygon(face, closed=True, facecolor=(light_value[0], light_value[1], light_value[2]), alpha=1)
+                polygon = patches.Polygon(face, closed=True, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
+
+        # Draw wireframes if requested
         if show_wireframes:
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
-                # Create a polygon patch for the current face
-                polygon = patches.Polygon(face, closed=True, edgecolor=wireframe_color, facecolor=(light_value[0], light_value[1], light_value[2]), alpha=1)
+                polygon = patches.Polygon(face, closed=True, edgecolor=wireframe_color, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
-        if render_materials:
-            raise Exception('Work in progress!')
 
-        # Set limits and labels
+        # Handle materials rendering if needed
+        if render_materials:
+            raise NotImplementedError('Material rendering is a work in progress!')
+
+        # Set plot limits and labels
         ax.set_xlim(-10, 10)
         ax.set_ylim(-10, 10)
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_title('Surface Plot from Vertices')
 
-        # Show the plot
+        # Finalize the plot
         plt.grid()
         plt.gca().set_aspect('equal', adjustable='box')  # Keep aspect ratio square
         return fig
