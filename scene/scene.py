@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import imageio
 
-from Nirvana.camera import *
+from Nirvana.camera.camera import *
 
 class Scene:
     def __init__(self):
