@@ -116,9 +116,25 @@ class BaseMaterial:
         """
         return self.metallic_texture
 
-    def get_uv_map(self):
+    def get_uv_map(self, face_number=None):
         """
         Get the UV mapping coordinates.
-        :return: List of UV coordinates.
+
+        :param face_number: Optional face index for UV mapping. If None, return the full UV map.
+        :return: UV mapping as a numpy array.
         """
-        return self.uv_map
+        uv_map_shape = self.uv_map.shape
+
+        # Check if uv_map is (3, 2)
+        if uv_map_shape == (3, 2):
+            return self.uv_map
+        
+        # Check if uv_map is in the shape of (something, 3, 2)
+        elif len(uv_map_shape) == 3 and uv_map_shape[1:] == (3, 2):
+            if face_number is None:
+                raise ValueError("face_number must be provided when uv_map shape is (N, 3, 2).")
+            return self.uv_map[face_number]
+        
+        else:
+            raise ValueError(f"Invalid UV map shape: {uv_map_shape}. Expected shapes are (3, 2) or (N, 3, 2).")
+
