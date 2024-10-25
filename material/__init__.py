@@ -1,1 +1,1 @@
-from Nirvana.material import base
+from Nirvana.material.base import *
