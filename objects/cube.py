@@ -1,4 +1,4 @@
-from Nirvana_3D.objects.base import *
+from Nirvana.objects.base import *
 import numpy as np
 
 class Cube(Object3D):
