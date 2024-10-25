@@ -1,7 +1,7 @@
 import numpy as np
 
 class Object3D:
-    def __init__(self, vertices, faces, centroid, material=None):
+    def __init__(self, vertices, faces, material=None):
         """
         Initialize Object3D with vertices, faces, and optional material.
 
@@ -10,9 +10,9 @@ class Object3D:
         :param centroid: The centroid (center) of the object.
         :param material: (Optional) A material object (instance of BaseMaterial or derived class).
         """
-        self.vertices = np.array(vertices, dtype=np.float64)  # Ensure precision
+        self.centroid = np.mean(self.vertices, axis=0).reshape(1, 3)
+        self.vertices = np.array(vertices, dtype=np.float64)  - self.centroid # Ensure precision
         self.faces = np.array(faces)
-        self.centroid = np.array(centroid, dtype=np.float64) + np.mean(self.vertices, axis=0).reshape(1, 3)
         self.tangents = None
         self.material = material  # Optional material object
 
