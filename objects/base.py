@@ -1,6 +1,6 @@
 import numpy as np
 
-from nirvana.material.base import *
+from Nirvana.material.base import *
 
 class Object3D:
     def __init__(self, vertices, faces, material=None):
