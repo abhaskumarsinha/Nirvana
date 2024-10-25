@@ -1,7 +1,7 @@
 import numpy as np
 from Nirvana.utils.barycentric_function import *
 
-def render_textured_face(vertices,
+def lambert_pipeline(vertices,
                          uv,
                          texture,
                          light_value,
