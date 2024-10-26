@@ -60,5 +60,4 @@ class Cube(Object3D):
             [[0, 1], [0, 0], [1, 0]],
             [[0, 1], [1, 0], [1, 1]],
         ])
-        print('uv shape: ', uv.shape)
         return uv
