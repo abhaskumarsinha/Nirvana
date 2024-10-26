@@ -126,6 +126,50 @@ class Scene:
 
         return projected_vertices
 
+    def _prepare_faces_for_rendering(self, objects):
+        """
+        Prepares and sorts faces of 3D objects by their Z-axis depth for rendering.
+
+        Args:
+            objects (list): A list of 3DObject instances, each with vertices, faces, tangents, and material.
+
+        Returns:
+            list: A list of dictionaries, each representing a face, sorted by Z-depth.
+        """
+        face_data = []
+
+        for obj_index, obj in enumerate(objects):
+            vertices = obj.get_vertices()
+            faces = obj.get_faces()
+            tangents = obj.get_tangents()  # Tangents for each face in the order of faces
+            material = obj.material
+        
+            # Get vertices for each face
+            face_vertices = vertices[faces]  # Shape: (num_faces, 3, 3)
+        
+            # Iterate through each face
+            for face_num, (face_verts, tangent) in enumerate(zip(face_vertices, tangents)):
+                # Calculate the average Z-depth of the face to use for sorting
+                z_depth = np.mean(face_verts[:, 2])
+            
+                # Get the UV map and texture for the current face
+                uv_map = material.get_uv_map(face_num)
+                texture = material.get_diffuse()
+            
+                # Store all the necessary data for sorting and rendering
+                face_data.append({
+                    'z_depth': z_depth,       # Z-axis depth for sorting
+                    'vertices': face_verts,    # 3D coordinates of the face's vertices
+                    'uv_map': uv_map,          # UV mapping for this face
+                    'texture': texture,        # Texture of this face
+                    'tangent': tangent,        # Tangent of this face
+                    'object_index': obj_index  # Index of the object this face belongs to
+                })
+
+        # Sort the faces by Z-depth in descending order (farthest to closest)
+        sorted_faces = sorted(face_data, key=lambda x: x['z_depth'], reverse=True)
+        return sorted_faces
+
     def render(self, show_wireframes=True,
                wireframe_color=(0, 0, 0),
                draw_solid_faces=True,
@@ -140,9 +184,9 @@ class Scene:
         # Get vertices, tangents and object indices for all objects
         all_vertices = np.concatenate([obj.get_vertices()[obj.get_faces()] for obj in objects], axis=0)
         all_tangents = np.concatenate([obj.get_tangents() for obj in objects], axis=0)
-        object_indices = np.concatenate([
-            np.full(obj.get_vertices()[obj.get_faces()].shape[0], i) for i, obj in enumerate(objects)
-        ])
+
+        sorted_objects = self._prepare_faces_for_rendering(objects)
+        print(sorted_objects)
 
 
         # Calculate the average Z-coordinate for each face
