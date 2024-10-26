@@ -223,8 +223,12 @@ class Scene:
 
         # Handle materials rendering if needed
         if render_materials:
+            for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
+                uv = obj['uv_map']
+                texture = obj['material'].get_diffuse_texture()
+                pixel_color = lambert_pipeline(face, uv, texture, light_value, ax)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
-            raise NotImplementedError('Material rendering is a work in progress!')
+            #raise NotImplementedError('Material rendering is a work in progress!')
 
         # Set plot limits and labels
         ax.set_xlim(-10, 10)
