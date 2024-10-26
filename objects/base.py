@@ -23,32 +23,45 @@ class Object3D:
 
     def load_obj(self, file_path):
         vertices = []
-        uv_coords = []
-        normals = []
         faces = []
+        normals = []
+        uv_coords = []
 
         with open(file_path, 'r') as file:
             for line in file:
-                if line.startswith('v '):  # Vertex coordinates
-                    _, x, y, z = line.strip().split()
-                    vertices.append((float(x), float(y), float(z)))
-                elif line.startswith('vt '):  # UV coordinates
-                    _, u, v = line.strip().split()
-                    uv_coords.append((float(u), float(v)))
-                elif line.startswith('vn '):  # Normals
-                    _, nx, ny, nz = line.strip().split()
-                    normals.append((float(nx), float(ny), float(nz)))
-                elif line.startswith('f '):  # Faces
+                parts = line.strip().split()
+                if not parts:
+                    continue
+                prefix, data = parts[0], parts[1:]
+
+                if prefix == 'v':  # Vertex data
+                    vertices.append([float(coord) for coord in data])
+                elif prefix == 'vt':  # Texture coordinate data
+                    uv_coords.append([float(coord) for coord in data])
+                elif prefix == 'vn':  # Normal vector data
+                    normals.append([float(coord) for coord in data])
+                elif prefix == 'f':  # Face data
                     face = []
-                    for vertex in line.strip().split()[1:]:
-                        v = vertex.split('/')
-                        # Convert to zero-indexed values and handle cases where vt or vn might be missing
-                        v_idx = int(v[0]) - 1
-                        vt_idx = int(v[1]) - 1 if len(v) > 1 and v[1] else None
-                        vn_idx = int(v[2]) - 1 if len(v) > 2 and v[2] else None
+                    for vertex in data:
+                        v_idx, vt_idx, vn_idx = (int(i) - 1 if i else None for i in vertex.split('/'))
                         face.append((v_idx, vt_idx, vn_idx))
-                    faces.append(face)
-        self.__init__(vertices = vertices, faces = faces, tangents = normals, uv_map = uv_coords)
+
+                    # Triangulate the face if it has more than 3 vertices
+                    if len(face) > 3:
+                        for i in range(1, len(face) - 1):
+                            faces.append([face[0], face[i], face[i + 1]])
+                    else:
+                        faces.append(face)  # Keep as-is if it's already a triangle
+
+        # Convert lists to numpy arrays for easy manipulation in the class
+        vertices = np.array(vertices, dtype=np.float64)
+        faces = np.array(faces)  # This will now contain only triangles
+        normals = np.array(normals, dtype=np.float64)
+        uv_coords = np.array(uv_coords, dtype=np.float64)
+
+        # Pass the triangulated data to the constructor
+        self.__init__(vertices=vertices, faces=faces, tangents=normals, uv_map=uv_coords)
+
 
 
     def set_material(self, material):
