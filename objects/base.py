@@ -29,8 +29,8 @@ class Object3D:
         if not isinstance(material, self.MaterialClass):
             raise TypeError("Material must be an instance of BaseMaterial or its subclasses.")
         self.material = material
-        if self.uv_map is not None:
-            self.material.uv_map = self.uv_map
+        if self.uv is not None:
+            self.material.uv_map = self.uv
 
     def get_material(self):
         """
