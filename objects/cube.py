@@ -12,8 +12,11 @@ class Cube(Object3D):
         # Generate faces (this function would remain the same)
         faces = self._generate_faces()
 
+        # Generate UV Map for the materials
+        uv_map = self._generate_uv_map()
+
         # Initialize the Cube by passing vertices and faces to the base class
-        super().__init__(vertices, faces)
+        super().__init__(vertices, faces, uv_map)
 
     def _generate_vertices(self):
         # Half the edge length for calculating the offsets from the center
@@ -41,3 +44,19 @@ class Cube(Object3D):
             [0, 4, 6, 2],  # Front face (CCW when viewed from outside)
             [1, 3, 7, 5],  # Back face (CCW when viewed from outside)
         ]
+
+    def _generate_uv_map(self):
+        return np.array([
+            [[0, 1], [0, 0], [1, 0]],
+            [[0, 1], [1, 0], [1, 1]],
+            [[0, 1], [0, 0], [1, 0]],
+            [[0, 1], [1, 0], [1, 1]],
+            [[0, 1], [0, 0], [1, 0]],
+            [[0, 1], [1, 0], [1, 1]],
+            [[0, 1], [0, 0], [1, 0]],
+            [[0, 1], [1, 0], [1, 1]],
+            [[0, 1], [0, 0], [1, 0]],
+            [[0, 1], [1, 0], [1, 1]],
+            [[0, 1], [0, 0], [1, 0]],
+            [[0, 1], [1, 0], [1, 1]],
+        ])
