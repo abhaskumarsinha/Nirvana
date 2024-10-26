@@ -3,7 +3,7 @@ import numpy as np
 from Nirvana.material.base import *
 
 class Object3D:
-    def __init__(self, vertices, faces, material=None):
+    def __init__(self, vertices, faces, uv_map = None, material=None):
         """
         Initialize Object3D with vertices, faces, and optional material.
 
@@ -18,6 +18,9 @@ class Object3D:
         self.faces = np.array(faces)
         self.tangents = None
         self.material = material  # Optional material object
+        
+        if self.material is not None:
+            self.material.uv_map = uv_map
 
     def set_material(self, material):
         """
