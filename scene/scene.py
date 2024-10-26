@@ -18,6 +18,8 @@ class Scene:
         self.objects = {}
         self.lights = {}
 
+        self.pixel_density = 10
+
         self.cameras['_globalCamera'] = Camera()
     
     def _compute_view_vector(self, P):
@@ -226,7 +228,7 @@ class Scene:
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                lambert_pipeline(face, uv, texture, light_value, ax)
+                lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             #raise NotImplementedError('Material rendering is a work in progress!')
 
