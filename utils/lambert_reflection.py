@@ -50,6 +50,8 @@ def lambert_pipeline(vertices,
                 # Sample the color from the texture
                 tex_color = texture[tex_y, tex_x]
 
+                print(tex_color)
+
                 # Apply lighting by modulating the texture color with the light value
                 final_color = tex_color * light_value
 
