@@ -180,40 +180,16 @@ class Scene:
         objects = list(self.objects.values())
         lights = list(self.lights.values())
 
-        # Get vertices, tangents and object indices for all objects
-        all_vertices = np.concatenate([obj.get_vertices()[obj.get_faces()] for obj in objects], axis=0)
-        all_tangents = np.concatenate([obj.get_tangents() for obj in objects], axis=0)
-
         sorted_objects = self._prepare_faces_for_rendering(objects)
-        print(sorted_objects)
-
-
-        # Calculate the average Z-coordinate for each face
-        avg_z_coordinates = np.mean(all_vertices[:, :, 2], axis=1)
-
-        # Apply perspective projection if focal length is provided
-        if focal_length is not None:
-            projected_coordinates = self.perspective_projection(all_vertices, focal_length, distance)
-        else:
-            projected_coordinates = all_vertices  # Use original vertices if no projection
-
-        # Keep only the x and y coordinates
-        vertex_2d = projected_coordinates[:, :, :2]
-
-        # Sort indices based on the average Z-coordinate (from farthest to nearest)
-        sorted_indices = np.argsort(avg_z_coordinates)[::-1]
-
-        # Reorder vertices and tangents based on sorted indices
-        # sorted_vertices = vertex_2d[sorted_indices]
-        # sorted_tangents = all_tangents[sorted_indices]
 
         # Extract sorted vertices and tangents
         sorted_vertices = np.array([face['vertices'] for face in sorted_objects])
-        sorted_vertices = self.perspective_projection(sorted_vertices, focal_length, distance)[:, :, :2]
         sorted_tangents = np.array([face['tangent'] for face in sorted_objects])
 
-        print('sorted vertices shape ', sorted_vertices.shape) # Shape (24, 3, 3)
-        print('sorted tangents shape ', sorted_tangents.shape) # Shape (24, 3)
+        if focal_length is not None:
+            sorted_vertices = self.perspective_projection(sorted_vertices, focal_length, distance)[:, :, :2]
+        else:
+            sorted_vertices = sorted_vertices[:, :, 2]
 
         # Initialize light intensity accumulator
         sorted_light_intensity = np.zeros((sorted_tangents.shape[0], 3))
