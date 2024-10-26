@@ -18,10 +18,7 @@ class Object3D:
         self.faces = np.array(faces)
         self.tangents = None
         self.material = material  # Optional material object
-        
-        if uv_map is not None:
-            print('THE CODE RUNS HERE')
-            self.material.uv_map = uv_map
+        self.uv = uv_map
 
     def set_material(self, material):
         """
@@ -32,6 +29,8 @@ class Object3D:
         if not isinstance(material, self.MaterialClass):
             raise TypeError("Material must be an instance of BaseMaterial or its subclasses.")
         self.material = material
+        if self.uv_map is not None:
+            self.material.uv_map = self.uv_map
 
     def get_material(self):
         """
