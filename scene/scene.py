@@ -189,7 +189,7 @@ class Scene:
         if focal_length is not None:
             sorted_vertices = self.perspective_projection(sorted_vertices, focal_length, distance)[:, :, :2]
         else:
-            sorted_vertices = sorted_vertices[:, :, 2]
+            sorted_vertices = sorted_vertices[:, :, :2]
 
         # Initialize light intensity accumulator
         sorted_light_intensity = np.zeros((sorted_tangents.shape[0], 3))
