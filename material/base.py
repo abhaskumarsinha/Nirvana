@@ -17,7 +17,7 @@ class BaseMaterial:
         :param ao_path: Path to the ambient occlusion (AO) texture file (optional).
         :param roughness_path: Path to the roughness texture file (optional).
         :param metallic_path: Path to the metallic texture file (optional).
-        :param uv_map: Optional list of UV coordinates. Defaults to [(0, 1), (0, 0), (1, 0)].
+        :param uv_map: Optional list of UV coordinates. Defaults to [(1, 0), (0, 0), (0, 1).
         """
         # Load diffusion texture (required)
         self.diffuse_texture = self._load_texture(diffuse_path)
