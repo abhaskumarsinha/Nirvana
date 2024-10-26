@@ -19,7 +19,7 @@ class Object3D:
         self.tangents = None
         self.material = material  # Optional material object
         
-        if self.material is not None:
+        if uv_map is not None:
             print('THE CODE RUNS HERE')
             self.material.uv_map = uv_map
 
