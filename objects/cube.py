@@ -46,7 +46,7 @@ class Cube(Object3D):
         ]
 
     def _generate_uv_map(self):
-        return np.array([
+        uv =  np.array([
             [[0, 1], [0, 0], [1, 0]],
             [[0, 1], [1, 0], [1, 1]],
             [[0, 1], [0, 0], [1, 0]],
@@ -60,3 +60,5 @@ class Cube(Object3D):
             [[0, 1], [0, 0], [1, 0]],
             [[0, 1], [1, 0], [1, 1]],
         ])
+        print('uv shape: ', uv.shape)
+        return uv
