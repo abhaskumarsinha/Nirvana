@@ -75,7 +75,7 @@ class Object3D:
             return
 
         # Calculate the valid range of indices (0 to number of vertices - 1)
-        max_index = len(self.vertices) - 1
+        max_index = len(self.vertices) - 2
         valid_faces = []
 
         for face in self.faces:
