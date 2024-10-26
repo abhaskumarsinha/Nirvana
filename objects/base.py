@@ -3,7 +3,7 @@ import numpy as np
 from Nirvana.material.base import *
 
 class Object3D:
-    def __init__(self, vertices, faces, uv_map = None, material=None):
+    def __init__(self, vertices = None, faces = None, tangents = None, uv_map = None, material=None):
         """
         Initialize Object3D with vertices, faces, and optional material.
 
@@ -13,12 +13,42 @@ class Object3D:
         :param material: (Optional) A material object (instance of BaseMaterial or derived class).
         """
         self.MaterialClass = BaseMaterial
-        self.centroid = np.mean(vertices, axis=0)
-        self.vertices = np.array(vertices, dtype=np.float64)  - self.centroid # Ensure precision
+        if vertices is not None self.centroid = np.mean(vertices, axis=0)
+        if self.vertices is not None self.vertices = np.array(vertices, dtype=np.float64)  - self.centroid # Ensure precision
         self.faces = np.array(faces)
-        self.tangents = None
+        self.tangents = tangents
         self.material = material  # Optional material object
         self.uv = uv_map
+
+    def load_obj(self, file_path):
+        vertices = []
+        uv_coords = []
+        normals = []
+        faces = []
+
+        with open(file_path, 'r') as file:
+            for line in file:
+                if line.startswith('v '):  # Vertex coordinates
+                    _, x, y, z = line.strip().split()
+                    vertices.append((float(x), float(y), float(z)))
+                elif line.startswith('vt '):  # UV coordinates
+                    _, u, v = line.strip().split()
+                    uv_coords.append((float(u), float(v)))
+                elif line.startswith('vn '):  # Normals
+                    _, nx, ny, nz = line.strip().split()
+                    normals.append((float(nx), float(ny), float(nz)))
+                elif line.startswith('f '):  # Faces
+                    face = []
+                    for vertex in line.strip().split()[1:]:
+                        v = vertex.split('/')
+                        # Convert to zero-indexed values and handle cases where vt or vn might be missing
+                        v_idx = int(v[0]) - 1
+                        vt_idx = int(v[1]) - 1 if len(v) > 1 and v[1] else None
+                        vn_idx = int(v[2]) - 1 if len(v) > 2 and v[2] else None
+                        face.append((v_idx, vt_idx, vn_idx))
+                    faces.append(face)
+        self.__init__(vertices = vertices, faces = faces, tangents = normals, uv_map = uv_coords)
+
 
     def set_material(self, material):
         """
