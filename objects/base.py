@@ -65,8 +65,28 @@ class Object3D:
         # Pass the cleaned and triangulated data to the constructor
         self.__init__(vertices=vertices, faces=faces, tangents=normals, uv_map=uv_coords)
 
+    def filter_bad_faces(self):
+        """
+        Filters out faces that contain vertex indices out of the valid range of vertices.
+        This ensures all faces reference existing vertices.
+        """
+        if self.vertices is None:
+            print("No vertices loaded; skipping face filtering.")
+            return
 
+        # Calculate the valid range of indices (0 to number of vertices - 1)
+        max_index = len(self.vertices) - 1
+        valid_faces = []
 
+        for face in self.faces:
+            # Check each vertex index in the face
+            if all(0 <= vertex_tuple[0] <= max_index for vertex_tuple in face):
+                valid_faces.append(face)
+            else:
+                print(f"Removing face {face} due to out-of-bounds vertex indices.")
+
+        # Update self.faces to contain only valid faces
+        self.faces = np.array(valid_faces)
 
     def set_material(self, material):
         """
