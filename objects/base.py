@@ -21,6 +21,7 @@ class Object3D:
         self.uv = uv_map
         self.material = material  # Optional material object
 
+    
     def load_obj(self, file_path):
         raw_vertices = []
         raw_normals = []
@@ -53,17 +54,24 @@ class Object3D:
                     for vertex in data:
                         v_idx, vt_idx, vn_idx = (int(i) - 1 if i else None for i in vertex.split('/'))
                         face_vertices.append(raw_vertices[v_idx])
-                        if vt_idx is not None:
+                        
+                        # Handle UV indices (use default if missing)
+                        if vt_idx is not None and vt_idx < len(raw_uv_coords):
                             face_uvs.append(raw_uv_coords[vt_idx])
-                        if vn_idx is not None:
+                        else:
+                            face_uvs.append([0.0, 0.0])  # Default UV
+
+                        # Handle normal indices (use default if missing)
+                        if vn_idx is not None and vn_idx < len(raw_normals):
                             face_normals.append(raw_normals[vn_idx])
+                        else:
+                            face_normals.append([0.0, 0.0, 1.0])  # Default normal (e.g., pointing up)
 
                     # Triangulate faces with more than 3 vertices
                     for i in range(1, len(face_vertices) - 1):
-                        # Add first triangle vertex
                         aligned_vertices.extend([face_vertices[0], face_vertices[i], face_vertices[i + 1]])
-                        aligned_normals.extend([face_normals[0], face_normals[i], face_normals[i + 1]])
                         aligned_uvs.extend([face_uvs[0], face_uvs[i], face_uvs[i + 1]])
+                        aligned_normals.extend([face_normals[0], face_normals[i], face_normals[i + 1]])
                         faces.append([len(aligned_vertices) - 3, len(aligned_vertices) - 2, len(aligned_vertices) - 1])
 
         # Convert lists to numpy arrays
