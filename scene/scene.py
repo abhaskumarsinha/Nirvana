@@ -209,6 +209,7 @@ class Scene:
 
         # Extract sorted vertices and tangents
         sorted_vertices = np.array([face['vertices'] for face in sorted_objects])
+        sorted_vertices = self.prespective_projection(sorted_vertices, focal_length, distance)[:, :, :2]
         sorted_tangents = np.array([face['tangent'] for face in sorted_objects])
 
         print('sorted vertices shape ', sorted_vertices.shape) # Shape (24, 3, 3)
