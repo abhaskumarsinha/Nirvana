@@ -22,11 +22,15 @@ class Object3D:
         self.material = material  # Optional material object
 
     def load_obj(self, file_path):
-        vertices = []
+        raw_vertices = []
+        raw_normals = []
+        raw_uv_coords = []
         faces = []
-        normals = []
-        uv_coords = []
+        aligned_vertices = []
+        aligned_normals = []
+        aligned_uvs = []
 
+        # Read file and populate raw vertex, normal, and UV coordinate lists
         with open(file_path, 'r') as file:
             for line in file:
                 parts = line.strip().split()
@@ -35,37 +39,40 @@ class Object3D:
                 prefix, data = parts[0], parts[1:]
 
                 if prefix == 'v':  # Vertex data
-                    vertices.append([float(coord) for coord in data])
+                    raw_vertices.append([float(coord) for coord in data])
                 elif prefix == 'vt':  # Texture coordinate data
-                    uv_coords.append([float(coord) for coord in data])
+                    raw_uv_coords.append([float(coord) for coord in data[:2]])  # Only take u, v
                 elif prefix == 'vn':  # Normal vector data
-                    normals.append([float(coord) for coord in data])
+                    raw_normals.append([float(coord) for coord in data])
                 elif prefix == 'f':  # Face data
-                    face = []
+                    face_vertices = []
+                    face_uvs = []
+                    face_normals = []
+
+                    # Parse each vertex in the face
                     for vertex in data:
-                        # Extract indices, or set to None if not specified
                         v_idx, vt_idx, vn_idx = (int(i) - 1 if i else None for i in vertex.split('/'))
-                        face.append((v_idx, vt_idx, vn_idx))
+                        face_vertices.append(raw_vertices[v_idx])
+                        if vt_idx is not None:
+                            face_uvs.append(raw_uv_coords[vt_idx])
+                        if vn_idx is not None:
+                            face_normals.append(raw_normals[vn_idx])
 
-                    # Filter out faces with any None values
-                    if all(None not in vertex_tuple for vertex_tuple in face):
-                        # Triangulate the face if it has more than 3 vertices
-                        if len(face) > 3:
-                            for i in range(1, len(face) - 1):
-                                faces.append([face[0], face[i], face[i + 1]])
-                        else:
-                            faces.append(face)  # Keep as-is if it's already a triangle
+                    # Triangulate faces with more than 3 vertices
+                    for i in range(1, len(face_vertices) - 1):
+                        # Add first triangle vertex
+                        aligned_vertices.extend([face_vertices[0], face_vertices[i], face_vertices[i + 1]])
+                        aligned_normals.extend([face_normals[0], face_normals[i], face_normals[i + 1]])
+                        aligned_uvs.extend([face_uvs[0], face_uvs[i], face_uvs[i + 1]])
+                        faces.append([len(aligned_vertices) - 3, len(aligned_vertices) - 2, len(aligned_vertices) - 1])
 
-        # Convert lists to numpy arrays for easy manipulation in the class
-        vertices = np.array(vertices, dtype=np.float64)
-        faces = np.array(faces)  # This will now contain only triangles without None values
-        normals = np.array(normals, dtype=np.float64)
-        uv_coords = np.array(uv_coords, dtype=np.float64)
+        # Convert lists to numpy arrays
+        vertices = np.array(aligned_vertices, dtype=np.float64)
+        faces = np.array(faces, dtype=np.int32)
+        normals = np.array(aligned_normals, dtype=np.float64)
+        uv_map = np.array(aligned_uvs, dtype=np.float64)
 
-        # Pass the cleaned and triangulated data to the constructor
-        self.__init__(vertices=vertices, faces=faces, tangents=normals, uv_map=uv_coords)
-        print('Total Vertices loaded: ', vertices.shape)
-        print('Total Faces loaded: ', faces.shape)
+        self.__init__(vertices=vertices, faces=faces, tangents=normals, uv_map=uv_map)
 
     def filter_bad_faces(self):
         """
