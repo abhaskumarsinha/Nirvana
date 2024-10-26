@@ -64,6 +64,8 @@ class Object3D:
 
         # Pass the cleaned and triangulated data to the constructor
         self.__init__(vertices=vertices, faces=faces, tangents=normals, uv_map=uv_coords)
+        print('Total Vertices loaded: ', vertices.shape)
+        print('Total Faces loaded: ', faces.shape)
 
     def filter_bad_faces(self):
         """
