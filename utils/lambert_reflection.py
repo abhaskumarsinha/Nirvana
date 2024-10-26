@@ -16,6 +16,7 @@ def lambert_pipeline(vertices,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
+    texture = texture / 255
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
     max_x, max_y = np.max(vertices, axis=0)
@@ -59,4 +60,4 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
 
                 # Plot the pixel
-                ax.plot(x, y, marker='o', markersize=0.5, color=final_color)
+                ax.plot(x, y, marker='o', markersize=1, color=final_color)
