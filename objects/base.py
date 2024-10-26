@@ -20,6 +20,7 @@ class Object3D:
         self.material = material  # Optional material object
         
         if self.material is not None:
+            print('THE CODE RUNS HERE')
             self.material.uv_map = uv_map
 
     def set_material(self, material):
