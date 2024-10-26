@@ -211,6 +211,9 @@ class Scene:
         sorted_vertices = np.array([face['vertices'] for face in sorted_objects])
         sorted_tangents = np.array([face['tangent'] for face in sorted_objects])
 
+        print('sorted vertices shape ', sorted_vertices.shape) # Shape (24, 3, 3)
+        print('sorted tangents shape ', sorted_tangents.shape) # Shape (24, 3)
+
         # Initialize light intensity accumulator
         sorted_light_intensity = np.zeros((sorted_tangents.shape[0], 3))
 
