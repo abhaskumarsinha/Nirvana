@@ -206,7 +206,6 @@ class Scene:
         # Reorder vertices and tangents based on sorted indices
         sorted_vertices = vertex_2d[sorted_indices]
         sorted_tangents = all_tangents[sorted_indices]
-        sorted_object_indices = object_indices[sorted_indices]
 
         # Initialize light intensity accumulator
         sorted_light_intensity = np.zeros((sorted_tangents.shape[0], 3))
