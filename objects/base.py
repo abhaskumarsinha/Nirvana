@@ -43,24 +43,28 @@ class Object3D:
                 elif prefix == 'f':  # Face data
                     face = []
                     for vertex in data:
+                        # Extract indices, or set to None if not specified
                         v_idx, vt_idx, vn_idx = (int(i) - 1 if i else None for i in vertex.split('/'))
                         face.append((v_idx, vt_idx, vn_idx))
 
-                    # Triangulate the face if it has more than 3 vertices
-                    if len(face) > 3:
-                        for i in range(1, len(face) - 1):
-                            faces.append([face[0], face[i], face[i + 1]])
-                    else:
-                        faces.append(face)  # Keep as-is if it's already a triangle
+                    # Filter out faces with any None values
+                    if all(None not in vertex_tuple for vertex_tuple in face):
+                        # Triangulate the face if it has more than 3 vertices
+                        if len(face) > 3:
+                            for i in range(1, len(face) - 1):
+                                faces.append([face[0], face[i], face[i + 1]])
+                        else:
+                            faces.append(face)  # Keep as-is if it's already a triangle
 
         # Convert lists to numpy arrays for easy manipulation in the class
         vertices = np.array(vertices, dtype=np.float64)
-        faces = np.array(faces)  # This will now contain only triangles
+        faces = np.array(faces)  # This will now contain only triangles without None values
         normals = np.array(normals, dtype=np.float64)
         uv_coords = np.array(uv_coords, dtype=np.float64)
 
-        # Pass the triangulated data to the constructor
+        # Pass the cleaned and triangulated data to the constructor
         self.__init__(vertices=vertices, faces=faces, tangents=normals, uv_map=uv_coords)
+
 
 
 
