@@ -3,22 +3,23 @@ import numpy as np
 from Nirvana.material.base import *
 
 class Object3D:
-    def __init__(self, vertices = None, faces = None, tangents = None, uv_map = None, material=None):
+    def __init__(self, vertices=None, faces=None, tangents=None, uv_map=None, material=None):
         """
         Initialize Object3D with vertices, faces, and optional material.
 
         :param vertices: List or array of 3D vertices of the object.
         :param faces: List or array of faces (each face is a list of vertex indices).
-        :param centroid: The centroid (center) of the object.
+        :param tangents: List or array of tangents.
+        :param uv_map: UV mapping data for the object.
         :param material: (Optional) A material object (instance of BaseMaterial or derived class).
         """
         self.MaterialClass = BaseMaterial
-        if vertices is not None self.centroid = np.mean(vertices, axis=0)
-        if self.vertices is not None self.vertices = np.array(vertices, dtype=np.float64)  - self.centroid # Ensure precision
-        self.faces = np.array(faces)
+        self.centroid = np.mean(vertices, axis=0) if vertices is not None else np.zeros(3)
+        self.vertices = np.array(vertices, dtype=np.float64) - self.centroid if vertices is not None else None
+        self.faces = np.array(faces) if faces is not None else None
         self.tangents = tangents
-        self.material = material  # Optional material object
         self.uv = uv_map
+        self.material = material  # Optional material object
 
     def load_obj(self, file_path):
         vertices = []
