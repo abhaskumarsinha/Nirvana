@@ -154,14 +154,13 @@ class Scene:
             
                 # Get the UV map and texture for the current face
                 uv_map = material.get_uv_map(face_num)
-                texture = material.get_diffuse()
             
                 # Store all the necessary data for sorting and rendering
                 face_data.append({
                     'z_depth': z_depth,       # Z-axis depth for sorting
                     'vertices': face_verts,    # 3D coordinates of the face's vertices
                     'uv_map': uv_map,          # UV mapping for this face
-                    'texture': texture,        # Texture of this face
+                    'material': material,        # Texture of this face
                     'tangent': tangent,        # Tangent of this face
                     'object_index': obj_index  # Index of the object this face belongs to
                 })
