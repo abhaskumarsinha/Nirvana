@@ -155,7 +155,10 @@ class Scene:
                 z_depth = np.mean(face_verts[:, 2])
             
                 # Get the UV map and texture for the current face
-                uv_map = material.get_uv_map(face_num)
+                try:
+                    uv_map = material.get_uv_map(face_num)
+                except:
+                    uv_map = None
             
                 # Store all the necessary data for sorting and rendering
                 face_data.append({
