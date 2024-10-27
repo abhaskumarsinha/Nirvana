@@ -19,6 +19,11 @@ class Scene:
         self.lights = {}
 
         self.pixel_density = 10
+        self.wireframe_color = (0, 0, 0)
+        self.face_color = (1, 1, 1)
+
+        # Define the allowed modes
+        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR'}
 
         self.cameras['_globalCamera'] = Camera()
     
@@ -174,10 +179,11 @@ class Scene:
         sorted_faces = sorted(face_data, key=lambda x: x['z_depth'], reverse=True)
         return sorted_faces
 
-    def render(self, show_wireframes=True,
-               wireframe_color=(0, 0, 0),
-               draw_solid_faces=True,
-               render_materials=False):
+    def render(self, mode = 'wireframe'):
+                
+        # Check if the mode is valid
+        if mode not in self.allowed_modes:
+            raise ValueError(f"Invalid render mode '{mode}'. Allowed modes are: {', '.join(allowed_modes)}")
 
         focal_length, distance = self.active_camera.f, self.active_camera.d
 
@@ -215,25 +221,28 @@ class Scene:
         fig, ax = plt.subplots()
 
         # Draw solid faces if requested
-        if draw_solid_faces:
+        if mode is 'solidface':
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
                 polygon = patches.Polygon(face, closed=True, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
 
         # Draw wireframes if requested
-        if show_wireframes:
+        if mode is 'wireframe':
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
                 polygon = patches.Polygon(face, closed=True, edgecolor=wireframe_color, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
 
         # Handle materials rendering if needed
-        if render_materials:
+        if mode is 'lambert':
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             #raise NotImplementedError('Material rendering is a work in progress!')
+
+        if mode is 'PBR':
+            raise NotImplementedError("PBR rendering mode has not been implemented yet.")
 
         # Set plot limits and labels
         ax.set_xlim(-10, 10)
