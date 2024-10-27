@@ -1,1 +1,1 @@
-from Nirvana.scene import Scene
+from Nirvana.scene.scene import Scene
