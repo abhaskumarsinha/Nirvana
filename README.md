@@ -33,7 +33,8 @@ https://github.com/user-attachments/assets/a5e81ef1-5c15-4556-bc50-1b70789a2dce
 ![container_rendering](https://github.com/user-attachments/assets/f2173d4f-0cd1-47a6-9b93-fe6dfb07f883)
 *A 3D rendering container Model imported in Nirvana and being rendered with solid face.*
 
-https://github.com/user-attachments/assets/f0913e6f-8889-468f-a7f1-49b28b06012e
+![output_video (3)](https://github.com/user-attachments/assets/5b8d3a95-b954-4eb4-9753-23fef85d074b)
+
 
 *A 3D rendering video of a Container Model being rendered frame wise in Nirvana 3D.*
 Model source: https://free3d.com/3d-model/container-169022.html
