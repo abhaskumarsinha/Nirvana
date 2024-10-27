@@ -130,6 +130,15 @@ scene.set_active_camera('cam')
 scene.render('solidface').savefig('./container_rendering.jpg', dpi=500)  # Save high-resolution render
 ```
 
+## Project Name and Slogan
+### Nirvana
+The name "Nirvana" signifies the quest for enlightenment and liberation from the complexities of traditional game development. It reflects our mission to empower developers to explore the fundamentals of 3D rendering and engine design without the usual barriers.
+
+### Slogan: "Dispel the ignorance of the illusionary world; transcend the game engine!"
+Our slogan captures the very idea to simplifying 3D graphics and provide a deeper understanding of rendering techniques. We aim to help developers go beyond conventional game engines, encouraging exploration and innovation in the realm of 3D graphics.
+
+
+
 # References
 - Akenine-Moller, Tomas, Eric Haines, and Naty Hoffman. Real-time rendering. AK Peters/crc Press, 2019.
 
