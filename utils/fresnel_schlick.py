@@ -16,4 +16,5 @@ def fresnel_schlick(H, V, F0):
     cos_theta = np.dot(H, V.T)
     
     # Apply Schlick's approximation for the Fresnel term
-    return F0 + (1 - F0) * (1 - cos_theta) ** 5
+    value = F0 + (1 - F0) * (1 - cos_theta) ** 5
+    return value.item()
