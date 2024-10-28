@@ -197,7 +197,7 @@ class Scene:
         # Extract sorted vertices and tangents
         sorted_vertices = np.array([face['vertices'] for face in sorted_objects])
         sorted_tangents = np.array([face['tangent'] for face in sorted_objects])
-        sorted_face_positions = np.mean(vertices, axis=1, keepdims=True)
+        sorted_face_positions = np.mean(sorted_vertices, axis=1, keepdims=True)
 
         if focal_length is not None:
             sorted_vertices = self.perspective_projection(sorted_vertices, focal_length, distance)[:, :, :2]
