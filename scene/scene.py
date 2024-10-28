@@ -21,9 +21,10 @@ class Scene:
         self.pixel_density = 10
         self.wireframe_color = (0, 0, 0)
         self.face_color = (1, 1, 1)
+        self.roughness_solidface = 0.5
 
         # Define the allowed modes
-        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR'}
+        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR', 'GGX_Distribution_solidface'}
 
         self.cameras['_globalCamera'] = Camera()
     
@@ -196,8 +197,7 @@ class Scene:
         # Extract sorted vertices and tangents
         sorted_vertices = np.array([face['vertices'] for face in sorted_objects])
         sorted_tangents = np.array([face['tangent'] for face in sorted_objects])
-
-        print('Shape of the sorted face vertices: ', sorted_vertices.shape) #debugging
+        sorted_face_positions = np.mean(vertices, axis=1, keepdims=True)
 
         if focal_length is not None:
             sorted_vertices = self.perspective_projection(sorted_vertices, focal_length, distance)[:, :, :2]
@@ -245,6 +245,27 @@ class Scene:
 
         if mode is 'PBR':
             raise NotImplementedError("PBR rendering mode has not been implemented yet.")
+
+        if mode is 'GGX_Distribution_solidface':
+            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+                face_color = (0, 0, 0)
+                for light in lights:
+                    light_direction = light.orientation
+                    view_direction = self._compute_view_vector(face_position)
+
+                    H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
+                    H = np.linalg.norm(H)
+
+                    # Now light and my vectors gone, Normal view to be used here.
+                    NdotH = np.dot(face_tangents, H) # Negate face_tangents if that doesn't work
+
+                    face_color += ggx_distribution(NdotH, self.roughness_solidface)
+
+                # Now clip the values to [0, 1] and plot
+                face_color = np.clip(face_color, 0, 1)
+
+                polygon = patches.Polygon(face, closed=True, facecolor=face_color, alpha=1)
+                ax.add_patch(polygon)                
 
         # Set plot limits and labels
         ax.set_xlim(-10, 10)
