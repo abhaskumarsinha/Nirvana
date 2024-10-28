@@ -21,7 +21,8 @@ class Scene:
         self.pixel_density = 10
         self.wireframe_color = (0, 0, 0)
         self.face_color = (1, 1, 1)
-        self.roughness_solidface = 0.5
+        self.distribution_roughness = 0.5
+        self.geometry_roughness = 0.5
         self.fresnel_value = 0.04
 
         # Define the allowed modes
@@ -245,7 +246,27 @@ class Scene:
             #raise NotImplementedError('Material rendering is a work in progress!')
 
         if mode is 'PBR':
-            raise NotImplementedError("PBR rendering mode has not been implemented yet.")
+            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+                face_color = 0
+                for light in lights:
+                    light_direction = light.orientation
+                    view_direction = self._compute_view_vector(face_position)
+
+                    H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
+                    H /= np.linalg.norm(H)
+
+                    face_color += cook_torrance_brdf(face_tangents, 
+                                                     view_direction, 
+                                                     light_direction, 
+                                                     H, 
+                                                     self.distribution_roughness, 
+                                                     self.geometry_roughness, 
+                                                     self.fresnel_value)
+
+                # Now clip the values to [0, 1] and plot
+                face_color = np.clip(face_color, 0, 1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(face_color[0, 0], face_color[0, 0], face_color[0, 0]), alpha=1)
+                ax.add_patch(polygon)
 
         if mode is 'GGX_Distribution_solidface':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
@@ -260,7 +281,7 @@ class Scene:
                     # Now light and my vectors gone, Normal view to be used here.
                     NdotH = np.dot(face_tangents.reshape(1, 3), H.reshape(1, 3).T) # Negate face_tangents if that doesn't work, transposing too to see if that works
 
-                    face_color += ggx_distribution(NdotH, self.roughness_solidface)
+                    face_color += ggx_distribution(NdotH, self.distribution_roughness)
 
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
@@ -274,7 +295,7 @@ class Scene:
                     light_direction = light.orientation
                     view_direction = self._compute_view_vector(face_position)
 
-                    face_color += ggx_geometry_full(face_tangents, view_direction, light_direction, self.roughness_solidface)
+                    face_color += ggx_geometry_full(face_tangents, view_direction, light_direction, self.geometry_roughness)
 
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
