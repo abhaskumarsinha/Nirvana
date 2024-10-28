@@ -254,7 +254,7 @@ class Scene:
                     view_direction = self._compute_view_vector(face_position)
 
                     H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
-                    H = np.linalg.norm(H)
+                    H /= np.linalg.norm(H)
 
                     # Now light and my vectors gone, Normal view to be used here.
                     NdotH = np.dot(face_tangents, H) # Negate face_tangents if that doesn't work
