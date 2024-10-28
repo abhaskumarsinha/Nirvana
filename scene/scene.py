@@ -258,6 +258,7 @@ class Scene:
 
                     # Now light and my vectors gone, Normal view to be used here.
                     NdotH = np.dot(face_tangents, H) # Negate face_tangents if that doesn't work
+                    print('NdotH', NdotH) # Should be a scalar, NOT a vector, debugging
 
                     face_color += ggx_distribution(NdotH, self.roughness_solidface)
 
