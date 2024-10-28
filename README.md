@@ -35,10 +35,18 @@ https://github.com/user-attachments/assets/a5e81ef1-5c15-4556-bc50-1b70789a2dce
 
 ![output_video (3)](https://github.com/user-attachments/assets/5b8d3a95-b954-4eb4-9753-23fef85d074b)
 
+![PBR_demonstration in Nirvana 3D](https://github.com/user-attachments/assets/ac829491-4962-472f-b644-f73a570b8f69)
+![PBR_demonstration in Nirvana 3D](https://github.com/user-attachments/assets/854f8df7-5b3c-422a-9114-96a504a1a470)
+![PBR_demonstration in Nirvana 3D](https://github.com/user-attachments/assets/f93e606b-de1b-4709-a4bb-ccff49a462a2)
+
+*PBR Solidface rendering for fresnel values = 0.5, 0.4, 0.4 above.*
+
 
 *A 3D rendering video of a Container Model being rendered frame wise in Nirvana 3D.*
 Model source: https://free3d.com/3d-model/container-169022.html
 Artist Credits: [[`jrgubric`]](https://free3d.com/user/jrgubric)
+
+
 
 ## Getting Started
 
@@ -129,6 +137,46 @@ scene.set_active_camera('cam')
 
 # Render the scene using solid face rendering and save the output image
 scene.render('solidface').savefig('./container_rendering.jpg', dpi=500)  # Save high-resolution render
+```
+
+#### 3. PBR Solid face rendering
+
+```python
+from Nirvana.objects import *
+from Nirvana.lights import *
+from Nirvana.camera import *
+from Nirvana.scene import *
+from Nirvana.material import *
+
+# Create a cube object and apply transformations
+cube1 = cube.Cube()
+cube1.rotate(10, 'x')               # Rotate cube by 10 degrees along the x-axis
+cube1.rotate(10, 'y')               # Rotate cube by 10 degrees along the y-axis
+cube1.triangulate()                 # Convert cube faces into triangles for rendering
+cube1.calculate_tangents()          # Calculate tangents for proper texture mapping
+
+# Create light sources to illuminate the scene
+sunlight = light.LightSource(orientation=(-0.5, -1, 0), color=(135, 206, 235))  # Primary sunlight with color
+sunlight2 = light.LightSource(orientation=(0.5, -1, 0.5), color=(1, 1, 1), intensity=0.2)  # Secondary light with low intensity
+
+# Set up the camera for the scene
+camera_ = camera.Camera(d=10, f=30)  # Position the camera with specified distance and focal length
+
+# Create and configure the scene
+scene = scene.Scene()
+scene.register_object(cube1, 'defaultCube')  # Add cube to the scene with an identifier
+scene.register_object(sunlight, 'light')     # Register the main light source
+scene.register_object(sunlight2, 'light2')   # Register secondary light source
+scene.register_object(camera_, 'cam')        # Register camera in the scene
+scene.set_active_camera('cam')               # Set the active camera for rendering
+
+
+scene.distribution_roughness = 0.5
+scene.geometry_roughness = 0.7
+scene.fresnel_value = 0.4
+
+
+scene.render('schlick_fresnel')  # Render in lambert shading mode and save as image
 ```
 
 ## Project Name and Slogan
