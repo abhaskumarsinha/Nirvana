@@ -262,7 +262,6 @@ class Scene:
                                                      self.distribution_roughness, 
                                                      self.geometry_roughness, 
                                                      self.fresnel_value)
-                    print('Face color: ', face_color)
 
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
