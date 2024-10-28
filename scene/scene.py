@@ -22,9 +22,10 @@ class Scene:
         self.wireframe_color = (0, 0, 0)
         self.face_color = (1, 1, 1)
         self.roughness_solidface = 0.5
+        self.fresnel_value = 0.04
 
         # Define the allowed modes
-        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface'}
+        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface', 'schlick_fresnel'}
 
         self.cameras['_globalCamera'] = Camera()
     
@@ -280,6 +281,23 @@ class Scene:
 
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
                 ax.add_patch(polygon)    
+
+        if mode is 'schlick_fresnel':
+            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+                face_color = 0
+                for light in lights:
+                    light_direction = light.orientation
+                    view_direction = self._compute_view_vector(face_position)
+
+                    H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
+                    H /= np.linalg.norm(H)
+                    
+                    face_color += fresnel_schlick(H, face_tangents, self.fresnel_value)
+
+                # Now clip the values to [0, 1] and plot
+                face_color = np.clip(face_color, 0, 1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
+                ax.add_patch(polygon)  
 
         # Set plot limits and labels
         ax.set_xlim(-10, 10)
