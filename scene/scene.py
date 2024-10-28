@@ -272,17 +272,13 @@ class Scene:
                 for light in lights:
                     light_direction = light.orientation
                     view_direction = self._compute_view_vector(face_position)
-                    print('light dir: ', light_direction)
-                    print('view_dir: ', view_direction)
 
                     face_color += ggx_geometry_full(face_tangents, view_direction, light_direction, self.roughness_solidface)
-                    print('face color: ', face_color)
 
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
 
-                print('face color value: ', face_color)
-                polygon = patches.Polygon(face, closed=True, facecolor=(face_color[0], face_color[0], face_color[0]), alpha=1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
                 ax.add_patch(polygon)    
 
         # Set plot limits and labels
