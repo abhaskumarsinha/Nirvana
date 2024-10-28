@@ -171,9 +171,9 @@ scene.register_object(camera_, 'cam')        # Register camera in the scene
 scene.set_active_camera('cam')               # Set the active camera for rendering
 
 
-scene.distribution_roughness = 0.5
-scene.geometry_roughness = 0.7
-scene.fresnel_value = 0.4
+scene.distribution_roughness = 0.5 # Surface roughness - Coal to Mirror varries
+scene.geometry_roughness = 0.7 # Metallic roughness - Plastic to metal varies
+scene.fresnel_value = 0.4 # Fresnel value - depends on refractive index
 
 
 scene.render('schlick_fresnel')  # Render in lambert shading mode and save as image
