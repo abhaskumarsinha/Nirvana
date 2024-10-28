@@ -272,8 +272,11 @@ class Scene:
                 for light in lights:
                     light_direction = light.orientation
                     view_direction = self._compute_view_vector(face_position)
+                    print('light dir: ', light_direction)
+                    print('view_dir: ', view_direction)
 
                     face_color += ggx_geometry_full(face_tangents, view_direction, light_direction, self.roughness_solidface)
+                    print('face color: ', face_color)
 
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
