@@ -33,7 +33,7 @@ def cook_torrance_brdf(N, V, L, H, distribution_roughness, geometry_roughness, F
     F_value = fresnel_schlick(H, V, F0)  # Fresnel function
 
     # Calculate the BRDF
-    denominator = 4 * np.dot(light_dir, normal.T) * np.dot(view_dir, normal.T)
+    denominator = 4 * np.dot(L, N.T) * np.dot(V, N.T)
     
     # Avoid division by zero
     if denominator == 0:
