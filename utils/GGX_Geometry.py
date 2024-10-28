@@ -15,7 +15,7 @@ def ggx_geometry_full(N, V, L, alpha):
     """
     def G1(N, X, alpha):
         # Dot product of normal and direction vector
-        N_dot_X = np.dot(N, X)
+        N_dot_X = np.dot(N, X.T)
         
         # Ensure N_dot_X is non-negative
         N_dot_X = max(N_dot_X, 0.0)
