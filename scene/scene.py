@@ -24,7 +24,7 @@ class Scene:
         self.roughness_solidface = 0.5
 
         # Define the allowed modes
-        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR', 'GGX_Distribution_solidface'}
+        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface'}
 
         self.cameras['_globalCamera'] = Camera()
     
@@ -264,7 +264,21 @@ class Scene:
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color[0, 0], face_color[0, 0], face_color[0, 0]), alpha=1)
-                ax.add_patch(polygon)                
+                ax.add_patch(polygon)      
+
+        if mode is 'GGX_Geometry_solidface':
+            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+                face_color = 0
+                for light in lights:
+                    light_direction = light.orientation
+                    view_direction = self._compute_view_vector(face_position)
+
+                    face_color += ggx_geometry_full(face_tangents, view_direction, light_direction, self.roughness_solidface)
+
+                # Now clip the values to [0, 1] and plot
+                face_color = np.clip(face_color, 0, 1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(face_color[0, 0], face_color[0, 0], face_color[0, 0]), alpha=1)
+                ax.add_patch(polygon)    
 
         # Set plot limits and labels
         ax.set_xlim(-10, 10)
