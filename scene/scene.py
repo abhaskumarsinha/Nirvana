@@ -258,14 +258,13 @@ class Scene:
 
                     # Now light and my vectors gone, Normal view to be used here.
                     NdotH = np.dot(face_tangents.reshape(1, 3), H.reshape(1, 3).T) # Negate face_tangents if that doesn't work, transposing too to see if that works
-                    print('NdotH', NdotH) # Should be a scalar, NOT a vector, debugging
 
                     face_color += ggx_distribution(NdotH, self.roughness_solidface)
 
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
                 print('Face Color: ', face_color)
-                polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(face_color[0], face_color[0], face_color[0]), alpha=1)
                 ax.add_patch(polygon)                
 
         # Set plot limits and labels
