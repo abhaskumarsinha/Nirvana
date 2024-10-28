@@ -1,4 +1,5 @@
 import numpy as np
+from Nirvana.config.config import *
 
 def ggx_geometry_full(N, V, L, alpha):
     """
@@ -23,7 +24,7 @@ def ggx_geometry_full(N, V, L, alpha):
         # Compute the single-direction GGX geometry term
         numerator = 2 * N_dot_X
         denominator = N_dot_X + np.sqrt(alpha**2 + (1 - alpha**2) * (N_dot_X ** 2))
-        return numerator / denominator
+        return numerator / (denominator + epsilon)
 
     # Compute G1 for both view and light directions
     G_V = G1(N, V, alpha)
