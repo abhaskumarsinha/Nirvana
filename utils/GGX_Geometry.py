@@ -32,4 +32,4 @@ def ggx_geometry_full(N, V, L, alpha):
     # The full GGX geometry term is the product of G1 for both directions
     G = G_V * G_L
     
-    return G
+    return G.item()
