@@ -197,6 +197,8 @@ class Scene:
         sorted_vertices = np.array([face['vertices'] for face in sorted_objects])
         sorted_tangents = np.array([face['tangent'] for face in sorted_objects])
 
+        print('Shape of the sorted face vertices: ', sorted_vertices.shape) #debugging
+
         if focal_length is not None:
             sorted_vertices = self.perspective_projection(sorted_vertices, focal_length, distance)[:, :, :2]
         else:
