@@ -37,8 +37,8 @@ def lambert_pipeline(face,
                 tx = int(tx * (texture.shape[1] - 1))
                 ty = int(ty * (texture.shape[0] - 1))
 
-                canvas[x, y] = image[ty, tx]
-                print('Printing color: ', image[ty, tx], ' at: ', x, y)
+                canvas[x, y] = texture[ty, tx]
+                print('Printing color: ', texture[ty, tx], ' at: ', x, y)
                 
             min_face_y += step_size_y
         min_face_x += step_size_x
