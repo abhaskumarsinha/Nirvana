@@ -28,7 +28,7 @@ def lambert_pipeline(face,
             x = int((min_face_x / range_x + 0.5) * render_resolution[0])
             y = int((min_face_y / range_y + 0.5) * render_resolution[1])
             
-            p = np.array([x, y])
+            p = np.array([min_face_x, min_face_y])
 
             u, v, w = barycentric_coords(p, face[0], face[1], face[2])
             print('found barycentric coords: ', u, v, w)
