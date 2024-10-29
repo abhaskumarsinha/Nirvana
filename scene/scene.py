@@ -24,6 +24,7 @@ class Scene:
         self.distribution_roughness = 0.5
         self.geometry_roughness = 0.5
         self.fresnel_value = 0.04
+        self.render_resolution = (420, 420)
 
         # Define the allowed modes
         self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface', 'schlick_fresnel'}
@@ -241,7 +242,7 @@ class Scene:
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density)
+                lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density, self.render_resolution)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             #raise NotImplementedError('Material rendering is a work in progress!')
 
