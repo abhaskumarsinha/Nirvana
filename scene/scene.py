@@ -252,7 +252,7 @@ class Scene:
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                face_canvas = lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density, self.render_resolution, (x_range, y_range))
+                face_canvas = lambert_pipeline(face, uv, texture, light_value, self.pixel_density, self.render_resolution, (x_range, y_range))
                 composite_canvas = np.clip(composite_canvas * face_canvas, 0, 1)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             #raise NotImplementedError('Material rendering is a work in progress!')
