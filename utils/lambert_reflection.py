@@ -62,5 +62,5 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
     
                 # Plot the pixel
-                canvas[x*10, y*10] = final_color
+                canvas[int(x*10), int(y*10)] = final_color
     return canvas      
