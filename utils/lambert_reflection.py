@@ -39,5 +39,5 @@ def lambert_pipeline(face,
                 canvas[x, y] = image[ty, tx]
                 
             min_face_y += step_size_y
-        max_face_x += step_size_x
+        min_face_x += step_size_x
 
