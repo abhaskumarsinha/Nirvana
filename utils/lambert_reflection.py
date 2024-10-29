@@ -23,7 +23,7 @@ def lambert_pipeline(vertices,
 
     height, width = resolution
     # Initialize a blank canvas
-    canvas = np.zeros((height + 1, width + 1, 3))
+    canvas = np.ones((height + 1, width + 1, 3))
                        
     
     texture = texture / 255
