@@ -7,7 +7,7 @@ def lambert_pipeline(vertices,
                          light_value,
                          ax,
                          pixel_density=10,
-                         resolution = None):
+                         resolution = (360, 360):
     """
     Render a textured face with lighting onto the matplotlib axis `ax`.
     vertices: 3x2 array of triangle vertices (in screen space).
@@ -17,6 +17,12 @@ def lambert_pipeline(vertices,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
+
+    height, width = resolution
+    # Initialize a blank canvas
+    canvas = np.zeros((height, width, 3))
+                       
+    
     texture = texture / 255
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
@@ -59,4 +65,6 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
 
                 # Plot the pixel
-                ax.plot(x, y, marker='o', markersize=1, color=final_color)
+                canvas[x, y] = final_color
+
+    return canvas
