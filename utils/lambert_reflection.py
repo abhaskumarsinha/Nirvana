@@ -12,8 +12,6 @@ def lambert_pipeline(face,
                      render_resolution, 
                      face_range):
     texture = texture.astype(np.float32) / 255.0
-    render_resolution *= 2 # Quick Fix till the view resolution gets fixed
-
     min_face_x = np.min(face[:, 0])
     max_face_x = np.max(face[:, 0])
     min_face_y = np.min(face[:, 1])
@@ -28,8 +26,8 @@ def lambert_pipeline(face,
     while min_face_x < max_face_x:
         while min_face_y < max_face_y:
 
-            x = int(((min_face_x + (range_x / 2)) / range_x) * render_resolution[0])
-            y = int(((min_face_y + (range_y / 2)) / range_y) * render_resolution[1])
+            x = int(((min_face_x + (range_x / 2)) / range_x) * render_resolution[0] * 2)
+            y = int(((min_face_y + (range_y / 2)) / range_y) * render_resolution[1] * 2)
             
             p = np.array([min_face_x, min_face_y])
 
