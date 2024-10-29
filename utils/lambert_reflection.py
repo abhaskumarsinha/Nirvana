@@ -7,7 +7,7 @@ def lambert_pipeline(vertices,
                          light_value,
                          ax,
                          pixel_density=10,
-                         resolution = (360, 360):
+                         resolution = (360, 360)):
     """
     Render a textured face with lighting onto the matplotlib axis `ax`.
     vertices: 3x2 array of triangle vertices (in screen space).
