@@ -10,6 +10,7 @@ def lambert_pipeline(face,
                      canvas, 
                      render_resolution, 
                      face_range):
+    texture /= 255
 
     min_face_x = np.min(face[:, 0])
     max_face_x = np.max(face[:, 0])
