@@ -12,4 +12,5 @@ def lambert_pipeline(face,
                      face_range):
 
     print('face values: ', face)
+    print('face range: ', face_range)
     canvas[0, 0] = (0, 0, 0)
