@@ -27,6 +27,7 @@ def lambert_pipeline(vertices,
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
     max_x, max_y = np.max(vertices, axis=0)
+    print('Min, Max of 2D projection of 3D vertices: ', min_x, min_y, max_x, max_y)
 
     # Ensure that we use integers for the number of samples
     num_samples_x = int(pixel_density * (max_x - min_x + 1))
