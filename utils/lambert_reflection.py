@@ -69,8 +69,7 @@ def lambert_pipeline(vertices,
 
                 x = (x / x_range_3D) * (resolution[0] / 2) + (resolution[0] / 2)
                 y = (y / y_range_3D) * (resolution[1] / 2) + (resolution[0] / 2)
-                # Plot the pixel
-                print('actual x, y values: ', x, y)
+
                 canvas[int(x) - 1, int(y) - 1] = final_color
 
     return canvas
