@@ -67,6 +67,8 @@ def lambert_pipeline(vertices,
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
 
+                print('actual x, y values: ', x, y)
+                print('rendering values of x, y: ', [int(x * x_range_3D/2 + 0.5 * x_range_3D) - 1, int(y * y_range_3D/2 + 0.5 * y_range_3D) - 1)
                 # Plot the pixel
                 canvas[int(x * x_range_3D/2 + 0.5 * x_range_3D) - 1, int(y * y_range_3D/2 + 0.5 * y_range_3D) - 1] = final_color
 
