@@ -248,13 +248,11 @@ class Scene:
 
         # Handle materials rendering if needed
         if mode is 'lambert':
-            final_canvas = np.ones((self.render_resolution[0] + 1, self.render_resolution[1] + 1,  3))
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 canvas = lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density, self.render_resolution, (x_range, y_range))
-                final_canvas *= canvas
-            ax.imshow(final_canvas)
+                ax.imshow(canvas)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             #raise NotImplementedError('Material rendering is a work in progress!')
 
