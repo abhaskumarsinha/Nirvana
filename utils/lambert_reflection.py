@@ -69,7 +69,6 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
 
                 # Plot the pixel
-                print('x, y coords: ', x * x_range_3D, y * y_range_3D)
-                canvas[int(x * x_range), int(y * y_range)] = final_color
+                canvas[int(x * x_range_3D), int(y * y_range_3D)] = final_color
 
     return canvas
