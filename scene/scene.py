@@ -248,7 +248,7 @@ class Scene:
 
         # Handle materials rendering if needed
         if mode is 'lambert':
-            final_canvas = np.ones((self.render_resolution)
+            final_canvas = np.ones((self.render_resolution))
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
