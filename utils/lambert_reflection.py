@@ -72,4 +72,7 @@ def lambert_pipeline(vertices,
 
                 canvas[int(x) - 1, int(y) - 1] = final_color
 
+
+    
+    print("Is the tensor all ones? :", np.all(canvas == 1))
     return canvas
