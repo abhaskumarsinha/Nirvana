@@ -34,8 +34,8 @@ def lambert_pipeline(face,
             print('found barycentric coords: ', u, v, w)
             if u >= 0 and v >= 0 and w >= 0:
                 tx, ty = u * uv[0] + v * uv[1] + w * uv[2]
-                tx = int(tx * (image.shape[1] - 1))
-                ty = int(ty * (image.shape[0] - 1))
+                tx = int(tx * (texture.shape[1] - 1))
+                ty = int(ty * (texture.shape[0] - 1))
 
                 canvas[x, y] = image[ty, tx]
                 print('Printing color: ', image[ty, tx], ' at: ', x, y)
