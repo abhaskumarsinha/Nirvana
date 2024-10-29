@@ -222,6 +222,15 @@ class Scene:
         # Clip the total light intensity to be in the range [0, 1]
         sorted_light_intensity = np.clip(sorted_light_intensity, 0, 1)
 
+        # Find the min and max for x and y across all faces
+        min_x = np.min(sorted_vertices[:, :, 0])
+        max_x = np.max(sorted_vertices[:, :, 0])
+        min_y = np.min(sorted_vertices[:, :, 1])
+        max_y = np.max(sorted_vertices[:, :, 1])
+
+        # Calculate x and y ranges
+        (x_range, y_range) = (max_x - min_x, max_y - min_y)
+
         # Create a figure and axis for plotting
         fig, ax = plt.subplots()
 
@@ -242,7 +251,7 @@ class Scene:
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                canvas = lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density, self.render_resolution)
+                canvas = lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density, self.render_resolution, (x_range, y_range))
                 print('Canvas shape: ', canvas)
                 return ax.imshow(canvas)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
