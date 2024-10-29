@@ -23,7 +23,7 @@ def lambert_pipeline(vertices,
 
     height, width = resolution
     # Initialize a blank canvas
-    canvas = np.zeros((height, width, 3))
+    canvas = np.zeros((height + 1, width + 1, 3))
                        
     
     texture = texture / 255
@@ -68,6 +68,6 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
 
                 # Plot the pixel
-                canvas[int(x * x_range_3D), int(y * y_range_3D)] = final_color
+                canvas[int(x * x_range_3D) - 1, int(y * y_range_3D) - 1] = final_color
 
     return canvas
