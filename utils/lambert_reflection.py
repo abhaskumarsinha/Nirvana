@@ -8,7 +8,7 @@ def lambert_pipeline(vertices,
                      ax,
                      pixel_density=10,
                      resolution=(100, 100),  # 100x100 pixel resolution for imshow
-                     xy_range=10):
+                     xy_range=(10, 10)):  # Separate x and y ranges as (x_ran, y_ran)
     """
     Render a textured face with lighting onto the matplotlib axis `ax` using imshow.
     vertices: 3x2 array of triangle vertices (in screen space).
@@ -18,17 +18,20 @@ def lambert_pipeline(vertices,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area.
     resolution: Tuple indicating the pixel resolution of the output image.
-    xy_range: The coordinate range to map to pixel space.
+    xy_range: Tuple (x_ran, y_ran) indicating coordinate ranges in x and y directions.
     """
+    # Unpack xy_range
+    x_ran, y_ran = xy_range
+    
     # Initialize a blank canvas with the desired resolution
     canvas = np.ones((resolution[0], resolution[1], 3))
     texture = texture / 255  # Normalize texture values to [0, 1]
 
-    # Calculate scaling from coordinate space to pixel space
-    scale_x = resolution[1] / (2 * xy_range)
-    scale_y = resolution[0] / (2 * xy_range)
+    # Calculate scaling from coordinate space to pixel space separately for x and y
+    scale_x = resolution[1] / (2 * x_ran)
+    scale_y = resolution[0] / (2 * y_ran)
 
-    # Get bounding box of triangle and set up pixel grid
+    # Get bounding box of the triangle and set up pixel grid
     min_x, min_y = np.min(vertices, axis=0)
     max_x, max_y = np.max(vertices, axis=0)
     x_range = np.linspace(min_x, max_x, int((max_x - min_x) * pixel_density))
@@ -53,12 +56,13 @@ def lambert_pipeline(vertices,
                 # Apply lighting
                 final_color = np.clip(tex_color * light_value, 0, 1)
 
-                # Map (x, y) to canvas indices
-                pixel_x = int((x + xy_range) * scale_x)
-                pixel_y = int((y + xy_range) * scale_y)
+                # Map (x, y) to canvas indices using separate x and y ranges
+                pixel_x = int((x + x_ran) * scale_x)
+                pixel_y = int((y + y_ran) * scale_y)
                 
+                # Ensure pixel coordinates are within bounds
                 if 0 <= pixel_x < resolution[1] and 0 <= pixel_y < resolution[0]:
                     canvas[pixel_y, pixel_x] = final_color
 
     # Display the canvas using imshow
-    ax.imshow(canvas, extent=(-xy_range, xy_range, -xy_range, xy_range))
+    ax.imshow(canvas, extent=(-x_ran, x_ran, -y_ran, y_ran))
