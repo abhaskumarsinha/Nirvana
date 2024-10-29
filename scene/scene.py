@@ -239,12 +239,16 @@ class Scene:
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
                 polygon = patches.Polygon(face, closed=True, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
+            ax.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
 
         # Draw wireframes if requested
         if mode is 'wireframe':
             for face, light_value in zip(sorted_vertices, sorted_light_intensity):
                 polygon = patches.Polygon(face, closed=True, edgecolor=wireframe_color, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
+            ax.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
 
         # Handle materials rendering if needed
         if mode is 'lambert':
@@ -256,6 +260,8 @@ class Scene:
             ax.imshow(canvas)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             #raise NotImplementedError('Material rendering is a work in progress!')
+            ax.set_xlim(0, 20)
+            ax.set_ylim(0, 20)
 
         if mode is 'PBR':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
@@ -279,6 +285,8 @@ class Scene:
                 face_color = np.clip(face_color, 0, 1)
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
                 ax.add_patch(polygon)
+            x.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
 
         if mode is 'GGX_Distribution_solidface':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
@@ -298,7 +306,9 @@ class Scene:
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color[0, 0], face_color[0, 0], face_color[0, 0]), alpha=1)
-                ax.add_patch(polygon)      
+                ax.add_patch(polygon) 
+            ax.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
 
         if mode is 'GGX_Geometry_solidface':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
@@ -314,6 +324,8 @@ class Scene:
 
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
                 ax.add_patch(polygon)    
+            ax.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
 
         if mode is 'schlick_fresnel':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
@@ -331,10 +343,9 @@ class Scene:
                 face_color = np.clip(face_color, 0, 1)
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
                 ax.add_patch(polygon)  
+            ax.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
 
-        # Set plot limits and labels
-        ax.set_xlim(-10, 10)
-        ax.set_ylim(-10, 10)
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_title('Surface Plot from Vertices')
