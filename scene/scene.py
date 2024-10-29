@@ -252,7 +252,6 @@ class Scene:
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 canvas = lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density, self.render_resolution, (x_range, y_range))
-                print('Canvas shape: ', canvas)
                 ax.imshow(canvas)
             # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
             #raise NotImplementedError('Material rendering is a work in progress!')
