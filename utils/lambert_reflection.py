@@ -26,8 +26,8 @@ def lambert_pipeline(face,
     while min_face_x < max_face_x:
         while min_face_y < max_face_y:
 
-            x = int((min_face_x / range_x + 0.5) * render_resolution[0])
-            y = int((min_face_y / range_y + 0.5) * render_resolution[1])
+            x = int((min_face_x / range_x + 1) * render_resolution[0])
+            y = int((min_face_y / range_y + 1) * render_resolution[1])
             
             p = np.array([min_face_x, min_face_y])
 
@@ -39,7 +39,6 @@ def lambert_pipeline(face,
                 ty = int(ty * (texture.shape[0] - 1))
 
                 canvas[x, y] = texture[ty, tx] * light_value
-                print('Printing color: ', texture[ty, tx], ' at: ', x, y)
                 
             min_face_y += step_size_y
         min_face_x += step_size_x
