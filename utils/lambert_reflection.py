@@ -32,7 +32,6 @@ def lambert_pipeline(face,
             p = np.array([min_face_x, min_face_y])
 
             u, v, w = barycentric_coords(p, face[0], face[1], face[2])
-            print('found barycentric coords: ', u, v, w)
             if u >= 0 and v >= 0 and w >= 0:
                 tx, ty = u * uv[0] + v * uv[1] + w * uv[2]
                 tx = int(tx * (texture.shape[1] - 1))
