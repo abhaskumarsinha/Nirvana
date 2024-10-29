@@ -18,14 +18,8 @@ def lambert_pipeline(vertices,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
-    # Extract range information
-    x_range_3D, y_range_3D = xy_range
-
-    height, width = resolution
-    # Initialize a blank canvas
-    canvas = np.ones((height + 1, width + 1, 3))
-                       
-    
+    canvas = np.ones((resolution[0], resolution[1], 3))
+                           
     texture = texture / 255
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
@@ -66,13 +60,7 @@ def lambert_pipeline(vertices,
 
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
-
-                x = (x / x_range_3D) * (resolution[0] / 2) + (resolution[0] / 2)
-                y = (y / y_range_3D) * (resolution[1] / 2) + (resolution[0] / 2)
-
-                canvas[int(x) - 1, int(y) - 1] = final_color
-
-
     
-    print("Is the tensor all ones? :", np.all(canvas == 1))
-    return canvas
+                # Plot the pixel
+                canvas[x*10, y*10] = final_color
+    return canvas      
