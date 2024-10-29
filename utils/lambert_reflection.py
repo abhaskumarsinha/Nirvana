@@ -7,17 +7,15 @@ def lambert_pipeline(vertices,
                      uv,
                      texture,
                      light_value,
-                     ax,
                      pixel_density=10,
-                     resolution=(100, 100),  # 100x100 pixel resolution for imshow
-                     xy_range=(10, 10)):  # Separate x and y ranges as (x_ran, y_ran)
+                     resolution=(100, 100),
+                     xy_range=(10, 10)):
     """
-    Render a textured face with lighting onto the matplotlib axis `ax` using imshow.
+    Render a single face with lighting onto its own canvas and return the result.
     vertices: 3x2 array of triangle vertices (in screen space).
     uv: 3x2 array of UV coordinates for the vertices.
     texture: The texture image to project onto the triangle.
     light_value: 1x3 array of RGB light intensity values for the triangle.
-    ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area.
     resolution: Tuple indicating the pixel resolution of the output image.
     xy_range: Tuple (x_ran, y_ran) indicating coordinate ranges in x and y directions.
@@ -33,7 +31,7 @@ def lambert_pipeline(vertices,
     scale_x = resolution[1] / (2 * x_ran)
     scale_y = resolution[0] / (2 * y_ran)
 
-    # Get bounding box of the triangle and set up pixel grid
+    # Get bounding box of triangle and set up pixel grid
     min_x, min_y = np.min(vertices, axis=0)
     max_x, max_y = np.max(vertices, axis=0)
     x_range = np.linspace(min_x, max_x, int((max_x - min_x) * pixel_density))
@@ -66,5 +64,4 @@ def lambert_pipeline(vertices,
                 if 0 <= pixel_x < resolution[1] and 0 <= pixel_y < resolution[0]:
                     canvas[pixel_y, pixel_x] = final_color
 
-    # Display the canvas using imshow
-    ax.imshow(canvas, extent=(-x_ran, x_ran, -y_ran, y_ran))
+    return canvas
