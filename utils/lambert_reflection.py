@@ -25,7 +25,9 @@ def lambert_pipeline(face,
     while min_face_x < max_face_x:
         while min_face_y < max_face_y:
 
-            x, y = int(min_face_x * resolution[0]), int(min_face_y * resolution[1])
+            x = int((min_face_x / range_x + 0.5) * render_resolution[0])
+            y = int((min_face_y / range_y + 0.5) * render_resolution[1])
+            
             p = np.array([x, y])
 
             u, v, w = barycentric_coords(p, face[0], face[1], face[2])
