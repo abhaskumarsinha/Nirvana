@@ -285,7 +285,7 @@ class Scene:
                 face_color = np.clip(face_color, 0, 1)
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
                 ax.add_patch(polygon)
-            x.set_xlim(-10, 10)
+            ax.set_xlim(-10, 10)
             ax.set_ylim(-10, 10)
 
         if mode is 'GGX_Distribution_solidface':
