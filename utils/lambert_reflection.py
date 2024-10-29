@@ -19,7 +19,7 @@ def lambert_pipeline(vertices,
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
     # Extract range information
-    x_range, y_range = xy_range
+    x_range_3D, y_range_3D = xy_range
 
     height, width = resolution
     # Initialize a blank canvas
@@ -69,7 +69,7 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
 
                 # Plot the pixel
-                print('x, y coords: ', x * x_range, y * y_range)
+                print('x, y coords: ', x * x_range_3D, y * y_range_3D)
                 canvas[int(x * x_range), int(y * y_range)] = final_color
 
     return canvas
