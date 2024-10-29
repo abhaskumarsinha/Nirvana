@@ -11,5 +11,5 @@ def lambert_pipeline(face,
                      render_resolution, 
                      face_range):
 
-
+    print('face values: ', face)
     canvas[0, 0] = (0, 0, 0)
