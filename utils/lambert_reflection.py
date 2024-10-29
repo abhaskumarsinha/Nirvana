@@ -28,8 +28,6 @@ def lambert_pipeline(face,
 
             x = int(((min_face_x + (range_x / 2)) / range_x) * render_resolution[0])
             y = int(((min_face_y + (range_y / 2)) / range_y) * render_resolution[1])
-
-            print('x, y are: ', x, y)
             
             p = np.array([min_face_x, min_face_y])
 
