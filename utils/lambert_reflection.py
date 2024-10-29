@@ -8,7 +8,7 @@ def lambert_pipeline(face,
                      texture, 
                      light_value, 
                      canvas, 
-                     self.render_resolution, 
+                     render_resolution, 
                      face_range):
 
 
