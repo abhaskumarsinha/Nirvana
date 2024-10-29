@@ -62,4 +62,4 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
     
                 # Plot the pixel
-                ax.plot(x, y, color = final_color)     
+                ax.plot(x, y, marker='o', markersize=1, color=final_color)
