@@ -7,7 +7,8 @@ def lambert_pipeline(vertices,
                          light_value,
                          ax,
                          pixel_density=10,
-                         resolution = (360, 360)):
+                         resolution = (360, 360),
+                         xy_range = 10):
     """
     Render a textured face with lighting onto the matplotlib axis `ax`.
     vertices: 3x2 array of triangle vertices (in screen space).
@@ -17,6 +18,8 @@ def lambert_pipeline(vertices,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
+    # Extract range information
+    x_range, y_range = xy_range
 
     height, width = resolution
     # Initialize a blank canvas
@@ -67,6 +70,6 @@ def lambert_pipeline(vertices,
 
                 # Plot the pixel
                 print('x, y coords: ', x, y)
-                canvas[x, y] = final_color
+                canvas[int(x * x_range), int(y * y_range)] = final_color
 
     return canvas
