@@ -16,7 +16,7 @@ class Cube(Object3D):
         uv_map = self._generate_uv_map()
 
         # Initialize the Cube by passing vertices and faces to the base class
-        super().__init__(vertices, faces, uv_map)
+        super().__init__(vertices = vertices, faces = faces, uv_map = uv_map)
 
     def _generate_vertices(self):
         # Half the edge length for calculating the offsets from the center
