@@ -1,7 +1,9 @@
 import numpy as np
 from Nirvana.utils.barycentric_function import *
+from Nirvna.utils.draw_canvas import *
 
-def lambert_pipeline(vertices,
+def lambert_pipeline(    canvas,
+                         vertices,
                          uv,
                          texture,
                          light_value,
@@ -58,4 +60,4 @@ def lambert_pipeline(vertices,
                 final_color = np.clip(final_color, 0, 1)
 
                 # Plot the pixel
-                ax.plot(x, y, marker='o', markersize=1, color=final_color)
+                plot_pixel(canvas = canvas, x = x, y = y, x_scene = (-10, 10), y_scene = (-10, 10))
