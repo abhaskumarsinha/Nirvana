@@ -85,7 +85,7 @@ def PBR_pipeline_texture(canvas,
                 normal_pix = 1 - normal_pix
                 #print('normal with light direction: ', normal_pix)
 
-                diffuse_pix = diffuse_pix * PBR_shader_pix * normal_pix * oa_pix *10
+                #diffuse_pix = diffuse_pix * PBR_shader_pix * normal_pix * oa_pix *10
                 #print('diffuse after OA PBR and normal: ', diffuse_pix)
 
                 final_color = np.clip(diffuse_pix, 0, 1)
