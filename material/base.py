@@ -70,11 +70,12 @@ class BaseMaterial:
                 # Raise an error if it's not a 3-channel RGB image
                 raise ValueError(f"Texture at {texture_path} is not a valid 3-channel RGB image.")
         elif len(texture.shape) == 2:
-            # If 2D, it's already a grayscale image, so no changes are needed
-            pass
+            # If 2D, it's a grayscale image, so expand dimensions to match RGB (make it 3-channel)
+            texture = np.stack([texture] * 3, axis=-1)
         else:
             # Raise an error if it’s neither 2D (grayscale) nor 3D with 3 channels (RGB)
             raise ValueError(f"Texture at {texture_path} is not a valid RGB (3-channel) or grayscale (1-channel) image.")
+
 
 
         return texture
