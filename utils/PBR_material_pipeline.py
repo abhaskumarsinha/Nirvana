@@ -26,11 +26,13 @@ def PBR_pipeline_texture(canvas,
                          pixel_density):
     # write code here
 
-    texture /= 255
-    oa /= 255
-    normal_tex /= 255
-    roughness /= 255
-    gloss /= 255
+    # Convert all textures to float before dividing by 255
+    texture = texture.astype(np.float32) / 255.0
+    oa = oa.astype(np.float32) / 255.0
+    normal_tex = normal_tex.astype(np.float32) / 255.0
+    roughness = roughness.astype(np.float32) / 255.0
+    gloss = gloss.astype(np.float32) / 255.0
+
 
     min_x, min_y = np.min(face, axis=0)
     max_x, max_y = np.max(face, axis=0)
