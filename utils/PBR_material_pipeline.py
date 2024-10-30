@@ -20,6 +20,7 @@ def PBR_pipeline_texture(canvas,
                          uv,
                          normal,
                          view_direction,
+                         light_direction,
                          H,
                          fresnel_value,
                          pixel_density):
