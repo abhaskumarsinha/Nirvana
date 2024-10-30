@@ -256,6 +256,8 @@ class Scene:
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density)
+            ax.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
 
         if mode is 'PBR':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
