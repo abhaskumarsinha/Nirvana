@@ -25,6 +25,7 @@ def lambert_pipeline(face,
 
     while min_face_x < max_face_x:
         while min_face_y < max_face_y:
+            print('Running while loop!', min_face_y)
 
             x = int(((min_face_x + (range_x / 2)) / range_x) * render_resolution[0])
             y = int(((min_face_y + (range_y / 2)) / range_y) * render_resolution[1])
