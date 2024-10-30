@@ -58,16 +58,14 @@ class BaseMaterial:
         # Load texture using imageio
         texture = imageio.imread(texture_path)
 
-        print('texture shape for AO: ', texture.shape)
-
-        # Ensure it's an RGB texture (drop alpha channel if present)
-        if texture.shape[2] == 4:
-            # Drop the alpha channel (RGBA -> RGB)
+        # Check if texture is either RGB (3 channels) or grayscale (1 channel)
+        if len(texture.shape) == 3 and texture.shape[2] == 4:
+            # Drop the alpha channel if it's RGBA (4 channels)
             texture = texture[:, :, :3]
 
-        # Check if texture is already 3-channel
-        if texture.shape[2] != 3:
-            raise ValueError(f"Texture at {texture_path} is not a 3-channel image.")
+        if not (len(texture.shape) == 3 and texture.shape[2] == 3) and not (len(texture.shape) == 2):
+            # Raise an error if it's not a valid RGB or grayscale image
+            raise ValueError(f"Texture at {texture_path} is not a valid RGB (3-channel) or grayscale (1-channel) image.")
 
         return texture
 
