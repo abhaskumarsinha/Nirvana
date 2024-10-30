@@ -27,7 +27,7 @@ class Scene:
         self.render_resolution = (420, 420)
 
         # Define the allowed modes
-        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface', 'schlick_fresnel'}
+        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR_solidface', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface', 'schlick_fresnel'}
 
         self.cameras['_globalCamera'] = Camera()
     
@@ -259,7 +259,7 @@ class Scene:
                 lambert_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
             ax.imshow(canvas)
 
-        if mode is 'PBR':
+        if mode is 'PBR_solidface':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
                 face_color = 0
                 for light in lights:
