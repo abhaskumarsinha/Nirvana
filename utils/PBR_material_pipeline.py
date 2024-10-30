@@ -82,6 +82,7 @@ def PBR_pipeline_texture(canvas,
                 normal_pix = normal_pix * 2 - 1
                 normal_pix /= np.linalg.norm(normal_pix, axis = -1)
                 normal_pix = np.clip(np.sum(normal_pix * light_direction, axis=-1), 0, 1)
+                normal_pix = 1 - normal_pix
                 print('normal with light direction: ', normal_pix)
 
                 diffuse_pix = diffuse_pix * PBR_shader_pix * normal_pix * oa_pix *10
