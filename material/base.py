@@ -58,6 +58,8 @@ class BaseMaterial:
         # Load texture using imageio
         texture = imageio.imread(texture_path)
 
+        print('texture shape for AO: ', texture.shape)
+
         # Ensure it's an RGB texture (drop alpha channel if present)
         if texture.shape[2] == 4:
             # Drop the alpha channel (RGBA -> RGB)
