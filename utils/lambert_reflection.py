@@ -39,7 +39,7 @@ def lambert_pipeline(face, uv, texture, light_value, canvas, render_resolution, 
 
                 # Draw on the canvas without blending or checking for previous values
                 if 0 <= canvas_x < render_resolution[0] and 0 <= canvas_y < render_resolution[1]:
-                    canvas[canvas_x, canvas_y] = texture[ty, tx] * light_value
+                    canvas[canvas_x, canvas_y] = texture[tx, ty] * light_value
                     #print(f'Drawing face at ({canvas_x}, {canvas_y})')
             
             current_y += step_size_y
