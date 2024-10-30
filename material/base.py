@@ -87,7 +87,7 @@ class BaseMaterial:
         :param texture: Texture array to validate.
         :raises ValueError: If the texture dimensions don't match the diffusion texture.
         """
-        if texture.shape != self.diffuse_texture.shape:
+        if texture.shape != self.diffuse_texture.shape and len(texture.shape) != 2:
             raise ValueError(f"Texture dimensions {texture.shape} do not match diffusion texture dimensions {self.diffuse_texture.shape}")
 
     # Accessors for the textures
