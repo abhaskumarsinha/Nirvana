@@ -1,6 +1,6 @@
 import numpy as np
 
-def plot_pixel_interpolated(canvas, x, y, color, x_scene=(-10, 10), y_scene=(-10, 10)):
+def plot_pixel(canvas, x, y, color, x_scene=(-10, 10), y_scene=(-10, 10)):
     """
     Plots a single point in a given canvas array using bilinear interpolation.
 
