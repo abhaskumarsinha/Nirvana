@@ -74,8 +74,8 @@ def PBR_pipeline_texture(canvas,
                                                     view_direction, 
                                                     light_direction, 
                                                     H, 
-                                                    roughness_pix, 
-                                                    gloss_pix, 
+                                                    0.2,          #roughness_pix, 
+                                                    0.2,          #gloss_pix, 
                                                     fresnel_value)
                 print('PBR Shader: ', PBR_shader_pix)
                 
