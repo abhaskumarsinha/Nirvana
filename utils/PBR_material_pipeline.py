@@ -88,7 +88,7 @@ def PBR_pipeline_texture(canvas,
                 #diffuse_pix = diffuse_pix * PBR_shader_pix * normal_pix * oa_pix *10
                 #print('diffuse after OA PBR and normal: ', diffuse_pix)
 
-                final_color = np.clip(diffuse_pix, 0, 1)
+                final_color = np.clip(np.dot(diffuse_pix, normal.T), 0, 1)
 
                 plot_pixel(canvas = canvas, x = x, y = y, color = final_color, x_scene = (-10, 10), y_scene = (-10, 10))
 
