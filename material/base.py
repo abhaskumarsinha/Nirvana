@@ -60,14 +60,22 @@ class BaseMaterial:
 
         print('texture shape: ', texture.shape)
 
-        # Check if texture is either RGB (3 channels) or grayscale (1 channel)
-        if len(texture.shape) == 3 and texture.shape[2] == 4:
-            # Drop the alpha channel if it's RGBA (4 channels)
-            texture = texture[:, :, :3]
-
-        if not (len(texture.shape) == 3 and texture.shape[2] == 3) and not (len(texture.shape) == 2):
-            # Raise an error if it's not a valid RGB or grayscale image
+        # Check if texture is RGB (3 channels) or grayscale (1 channel)
+        if len(texture.shape) == 3:
+            # If 3D, ensure it has exactly 3 channels (RGB)
+            if texture.shape[2] == 4:
+                # Drop the alpha channel if it's RGBA (4 channels)
+                texture = texture[:, :, :3]
+            elif texture.shape[2] != 3:
+                # Raise an error if it's not a 3-channel RGB image
+                raise ValueError(f"Texture at {texture_path} is not a valid 3-channel RGB image.")
+        elif len(texture.shape) == 2:
+            # If 2D, it's already a grayscale image, so no changes are needed
+            pass
+        else:
+            # Raise an error if it’s neither 2D (grayscale) nor 3D with 3 channels (RGB)
             raise ValueError(f"Texture at {texture_path} is not a valid RGB (3-channel) or grayscale (1-channel) image.")
+
 
         return texture
 
