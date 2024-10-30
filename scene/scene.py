@@ -287,7 +287,8 @@ class Scene:
                                         normal,
                                         view_direction,
                                         H,
-                                        self.fresnel_value)
+                                        self.fresnel_value,
+                                        self.pixel_density)
             im.show(canvas)
                     
                     
