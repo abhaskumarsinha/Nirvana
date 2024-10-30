@@ -252,12 +252,12 @@ class Scene:
 
         # Handle materials rendering if needed
         if mode is 'lambert':
+            canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density)
-            ax.set_xlim(-10, 10)
-            ax.set_ylim(-10, 10)
+                lambert_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
+            ax.imshow(canvas)
 
         if mode is 'PBR':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
