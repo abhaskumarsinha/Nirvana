@@ -58,6 +58,8 @@ class BaseMaterial:
         # Load texture using imageio
         texture = imageio.imread(texture_path)
 
+        print('texture shape: ', texture.shape)
+
         # Check if texture is either RGB (3 channels) or grayscale (1 channel)
         if len(texture.shape) == 3 and texture.shape[2] == 4:
             # Drop the alpha channel if it's RGBA (4 channels)
