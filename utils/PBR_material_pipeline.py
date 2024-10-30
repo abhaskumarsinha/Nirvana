@@ -77,7 +77,7 @@ def PBR_pipeline_texture(canvas,
                                                     0.2,          #roughness_pix, 
                                                     0.2,          #gloss_pix, 
                                                     fresnel_value)
-                print('PBR Shader: ', PBR_shader_pix)
+                print('PBR Shader: ', PBR_shader_pix * 4)
                 
                 normal_pix = normal_pix * 2 - 1
                 normal_pix /= np.linalg.norm(normal_pix, axis = -1)
