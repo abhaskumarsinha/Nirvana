@@ -27,7 +27,7 @@ class Scene:
         self.render_resolution = (420, 420)
 
         # Define the allowed modes
-        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR_solidface', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface', 'schlick_fresnel'}
+        self.allowed_modes = {'wireframe', 'solidface', 'lambert', 'PBR_solidface', 'GGX_Distribution_solidface', 'GGX_Geometry_solidface', 'schlick_fresnel', 'PBR'}
 
         self.cameras['_globalCamera'] = Camera()
     
@@ -258,6 +258,40 @@ class Scene:
                 texture = obj['material'].get_diffuse_texture()
                 lambert_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
             ax.imshow(canvas)
+
+        if mode is 'PBR':
+            canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
+            for face, normal, obj, face_position in zip(sorted_vertices, sorted_tangents, sorted_objects, sorted_face_positions):
+                texture = obj['material'].get_diffuse_texture()
+                oa = obj['material'].get_oa_texture()
+                normal_tex = obj['material'].get_normal_texture()
+                roughness = obj['material'].get_roughness_texture()
+                gloss = obj['material'].get_metallic_texture()
+                
+                view_direction = self._compute_view_vector(face_position)
+                for light in lights:
+                    # Light, face, normal on face, face materials, view_direction are now known.
+
+                    light_direction = light.orientation
+                    H = light_direction + view_direction
+                    H /= np.linalg.norm(H)
+
+                    PBR_pipeline_texture(canvas,
+                                        face,
+                                        texture,
+                                        oa,
+                                        normal_tex,
+                                        roughness,
+                                        gloss,
+                                        uv,
+                                        normal,
+                                        view_direction,
+                                        H,
+                                        self.fresnel_value)
+            im.show(canvas)
+                    
+                    
+                
 
         if mode is 'PBR_solidface':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
