@@ -1,6 +1,6 @@
 import numpy as np
 from Nirvana.utils.barycentric_function import *
-from Nirvna.utils.draw_canvas import *
+from Nirvana.utils.draw_canvas import *
 
 def lambert_pipeline(    canvas,
                          vertices,
