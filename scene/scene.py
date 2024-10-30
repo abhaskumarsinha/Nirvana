@@ -286,6 +286,7 @@ class Scene:
                                         uv,
                                         normal,
                                         view_direction,
+                                        light_direction,
                                         H,
                                         self.fresnel_value,
                                         self.pixel_density)
