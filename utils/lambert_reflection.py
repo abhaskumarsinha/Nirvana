@@ -38,6 +38,7 @@ def lambert_pipeline(face,
                 ty = int(ty * (texture.shape[0] - 1))
 
                 canvas[x, y] = texture[ty, tx] * light_value
+                print('Changing canvas colors')
                 
             min_face_y += step_size_y
         min_face_x += step_size_x
