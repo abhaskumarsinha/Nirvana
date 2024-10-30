@@ -21,7 +21,7 @@ def lambert_pipeline(face, uv, texture, light_value, canvas, render_resolution, 
     while x < max_face_x:
         y = min_face_y
         while y < max_face_y:
-            print('Running while loop!', y)
+            #print('Running while loop!', y)
 
             # Calculate canvas coordinates
             canvas_x = int(((x - min_face_x) / range_x) * render_resolution[0])
@@ -40,7 +40,7 @@ def lambert_pipeline(face, uv, texture, light_value, canvas, render_resolution, 
                 # Ensure the coordinates are within the canvas bounds
                 if 0 <= canvas_x < render_resolution[0] and 0 <= canvas_y < render_resolution[1]:
                     canvas[canvas_x, canvas_y] = texture[ty, tx] * light_value
-                    print('Changing canvas colors')
+                    #print('Changing canvas colors')
                 
             y += step_size_y
         x += step_size_x
