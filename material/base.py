@@ -34,15 +34,15 @@ class BaseMaterial:
             self._validate_texture(self.normal_texture)
 
         if ao_path:
-            self.ao_texture = self._load_texture(ao_path)
+            self.ao_texture = self._load_texture(ao_path).mean(axis=2)
             self._validate_texture(self.ao_texture)
 
         if roughness_path:
-            self.roughness_texture = self._load_texture(roughness_path)
+            self.roughness_texture = self._load_texture(roughness_path).mean(axis=2)
             self._validate_texture(self.roughness_texture)
 
         if metallic_path:
-            self.metallic_texture = self._load_texture(metallic_path)
+            self.metallic_texture = self._load_texture(metallic_path).mean(axis=2)
             self._validate_texture(self.metallic_texture)
 
         # Set the UV map, defaulting to specified coordinates if not provided
