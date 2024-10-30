@@ -263,7 +263,7 @@ class Scene:
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, normal, obj, face_position in zip(sorted_vertices, sorted_tangents, sorted_objects, sorted_face_positions):
                 texture = obj['material'].get_diffuse_texture()
-                oa = obj['material'].get_oa_texture()
+                oa = obj['material'].get_ao_texture()
                 normal_tex = obj['material'].get_normal_texture()
                 roughness = obj['material'].get_roughness_texture()
                 gloss = obj['material'].get_metallic_texture()
