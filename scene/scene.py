@@ -252,17 +252,10 @@ class Scene:
 
         # Handle materials rendering if needed
         if mode is 'lambert':
-            canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                print('Calling pipeline for a face')
-                lambert_pipeline(face, uv, texture, light_value, canvas, self.render_resolution, (x_range, y_range))
-            ax.imshow(canvas)
-            # Find a way to match a 3D Face to the exact 2D map indices of that object to which that 3D face belongs.
-            #raise NotImplementedError('Material rendering is a work in progress!')
-            ax.set_xlim(0, self.render_resolution[0])
-            ax.set_ylim(0, self.render_resolution[1])
+                lambert_pipeline(face, uv, texture, light_value, ax, self.pixel_density)
 
         if mode is 'PBR':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
