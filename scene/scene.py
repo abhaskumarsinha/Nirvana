@@ -267,6 +267,7 @@ class Scene:
                 normal_tex = obj['material'].get_normal_texture()
                 roughness = obj['material'].get_roughness_texture()
                 gloss = obj['material'].get_metallic_texture()
+                uv = obj['uv_map']
                 
                 view_direction = self._compute_view_vector(face_position)
                 for light in lights:
