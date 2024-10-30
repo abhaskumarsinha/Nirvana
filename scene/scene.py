@@ -291,7 +291,7 @@ class Scene:
                                         H,
                                         self.fresnel_value,
                                         self.pixel_density)
-            ax.show(canvas)
+            ax.imshow(canvas)
                     
                     
                 
