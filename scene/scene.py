@@ -260,38 +260,29 @@ class Scene:
             ax.imshow(canvas)
 
         if mode is 'PBR':
-            canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
-            for face, normal, obj, face_position in zip(sorted_vertices, sorted_tangents, sorted_objects, sorted_face_positions):
-                texture = obj['material'].get_diffuse_texture()
-                oa = obj['material'].get_ao_texture()
-                normal_tex = obj['material'].get_normal_texture()
-                roughness = obj['material'].get_roughness_texture()
-                gloss = obj['material'].get_metallic_texture()
-                uv = obj['uv_map']
-                
-                view_direction = self._compute_view_vector(face_position)
+            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+                face_color = 0
                 for light in lights:
-                    # Light, face, normal on face, face materials, view_direction are now known.
-
                     light_direction = light.orientation
-                    H = light_direction + view_direction
+                    view_direction = self._compute_view_vector(face_position)
+
+                    H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
                     H /= np.linalg.norm(H)
 
-                    PBR_pipeline_texture(canvas,
-                                        face,
-                                        texture,
-                                        oa,
-                                        normal_tex,
-                                        roughness,
-                                        gloss,
-                                        uv,
-                                        normal,
-                                        view_direction,
-                                        light_direction,
-                                        H,
-                                        self.fresnel_value,
-                                        self.pixel_density)
-            ax.imshow(canvas)
+                    face_color += cook_torrance_brdf(face_tangents, 
+                                                     view_direction, 
+                                                     light_direction, 
+                                                     H, 
+                                                     self.distribution_roughness, 
+                                                     self.geometry_roughness, 
+                                                     self.fresnel_value)
+
+                # Now clip the values to [0, 1] and plot
+                face_color = np.clip(face_color, 0, 1)
+                polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
+                ax.add_patch(polygon)
+            ax.set_xlim(-10, 10)
+            ax.set_ylim(-10, 10)
                     
                     
                 
