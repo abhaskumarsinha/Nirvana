@@ -261,7 +261,13 @@ class Scene:
 
         if mode is 'PBR':
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
-            for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
+            for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):
+                for light in lights:
+                    L = light.orientation
+                    V = self._compute_view_vector(face_position)
+                    N = normal
+                    H = light_direction + view_direction
+                    H /= np.linalg.norm(H)
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 PBR_material_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
