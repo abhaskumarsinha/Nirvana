@@ -32,6 +32,11 @@ def PBR_material_pipeline(canvas,
     metallic = obj['material'].get_metallic_texture().astype(float) / 255
     fresnel = fresnel_value
 
+    normal_rescaled = (normal * 2) - 1
+    dot_product = np.einsum('ijk,k->ij', normal_rescaled, L[0])
+    shadow_intensity = np.clip(dot_product, 0, 1)
+
+
     L, V, N, H = light_configs   
     print('half angle: ', H)
     print('tangents: ', N)
@@ -74,8 +79,16 @@ def PBR_material_pipeline(canvas,
                 tex_color = texture[tex_y, tex_x]
 
                 # Apply lighting by modulating the texture color with the light value
-                final_color = cook_torrance_brdf(N, V, L, H, 0.5, 0, fresnel_value)
-
+                R = roughness[tex_y, tex_x]
+                G = metallic[tex_y, tex_x]
+                shadow = shadow_intensity[tex_y, tex_x]
+                AO_shadow = ao[tex_y, tex_x]
+                final_color = cook_torrance_brdf(N, V, L, H, R, G, fresnel_value)
+                final_color *= tex_color
+                final_color *= shadow
+                final_color *= AO_shadow
+                final_color *= 4
+                
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
 
