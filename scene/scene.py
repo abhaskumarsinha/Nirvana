@@ -256,7 +256,7 @@ class Scene:
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                PBR_material_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
+                lambert_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
             ax.imshow(canvas)
 
         if mode is 'PBR':
@@ -264,7 +264,7 @@ class Scene:
             for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
-                lambert_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
+                PBR_material_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
             ax.imshow(canvas)
 
         
