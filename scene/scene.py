@@ -280,6 +280,13 @@ class Scene:
                     H /= np.linalg.norm(H)
                     light_configs = (L, V, N, H)
 
+                    PBR_material_pipeline(canvas,
+                                         face,
+                                         uv,
+                                         mat,
+                                         light_configs,
+                                         ax,
+                                         pixel_density = self.pixel_density)
                     
                 # Testing, remove
                 light_value = L
