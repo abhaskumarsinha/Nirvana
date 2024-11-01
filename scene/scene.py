@@ -262,12 +262,25 @@ class Scene:
         if mode is 'PBR':
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):
+                D_tex = obj.get_diffuse_texture()
+                N_tex = obj.get_normal_texture()
+                OA_tex = obj.get_ao_texture()
+                R_tex = obj.get_roughness_texture()
+                G_tex = obj.get_metallic_texture()
+
+                mat = (D_tex, N_tex, OA_tex, R_tex, G_tex, self.fresnel_value)
+
+                uv = obj['uv_map']
+                
                 for light in lights:
                     L = light.orientation
                     V = self._compute_view_vector(face_position)
                     N = normal
                     H = L + V
                     H /= np.linalg.norm(H)
+                    light_configs = (L, V, N, H)
+
+                    
                 # Testing, remove
                 light_value = L
                 uv = obj['uv_map']
