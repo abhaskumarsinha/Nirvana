@@ -84,10 +84,10 @@ def PBR_material_pipeline(canvas,
                 shadow = shadow_intensity[tex_y, tex_x]
                 AO_shadow = ao[tex_y, tex_x]
                 final_color = cook_torrance_brdf(N, V, L, H, R, G, fresnel_value)
-                final_color *= tex_color
+                #final_color *= tex_color
                 #final_color *= shadow
                 #final_color *= AO_shadow
-                final_color *= 4
+                #final_color *= 4
                 
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
