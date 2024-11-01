@@ -269,6 +269,7 @@ class Scene:
                 G_tex = obj['material'].get_metallic_texture()
 
                 mat = (D_tex, N_tex, OA_tex, R_tex, G_tex, self.fresnel_value)
+                print('Mat len', len(mat))
 
                 uv = obj['uv_map']
                 
