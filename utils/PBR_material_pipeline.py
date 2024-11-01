@@ -26,7 +26,7 @@ def PBR_material_pipeline(canvas,
     """
     texture = mat[0].astype(float)
     texture /= 255
-    print('texture shape: ', texture.shape)
+    print('Total provided textures: ', len(mat))
                            
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
