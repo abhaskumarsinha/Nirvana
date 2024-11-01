@@ -32,15 +32,15 @@ def PBR_material_pipeline(canvas,
     metallic = obj['material'].get_metallic_texture().astype(float) / 255
     fresnel = fresnel_value
 
-    normal_rescaled = (normal * 2) - 1
-    dot_product = np.einsum('ijk,k->ij', normal_rescaled, L[0])
-    shadow_intensity = np.clip(dot_product, 0, 1)
-
-
     L, V, N, H = light_configs   
     print('half angle: ', H)
     print('tangents: ', N)
     print('face_color: ', cook_torrance_brdf(N, V, L, H, 0.5, 0, fresnel_value))
+
+    normal_rescaled = (normal * 2) - 1
+    dot_product = np.einsum('ijk,k->ij', normal_rescaled, L[0])
+    shadow_intensity = np.clip(dot_product, 0, 1)
+
 
     uv = obj['uv_map']
                            
