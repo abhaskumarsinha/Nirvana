@@ -268,6 +268,8 @@ class Scene:
                     N = normal
                     H = L + V
                     H /= np.linalg.norm(H)
+                # Testing, remove
+                light_value = L
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 PBR_material_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
