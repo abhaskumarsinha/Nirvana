@@ -24,7 +24,7 @@ def PBR_material_pipeline(canvas,
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
                            
-    texture = obj['material'].get_diffuse_texture()
+    texture = obj['material'].get_diffuse_texture().astype(float)
     texture /= 255
                            
     # Get the bounding box of the triangle
