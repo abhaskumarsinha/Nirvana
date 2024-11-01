@@ -71,7 +71,7 @@ def PBR_material_pipeline(canvas,
                 tex_color = texture[tex_y, tex_x]
 
                 # Apply lighting by modulating the texture color with the light value
-                final_color = cook_torrance_brdf(N, V, L, H, 0.2, 0.2, fresnel_value) 
+                final_color = ggx_geometry_full(N, V, L, 0.2)
 
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
