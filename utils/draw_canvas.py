@@ -24,4 +24,4 @@ def plot_pixel(canvas, x, y, color, x_scene=(-10, 10), y_scene=(-10, 10)):
     
     # Ensure i, j are within bounds of the canvas
     if 0 <= i < x_size and 0 <= j < y_size:
-        canvas[j, i] = color
+        canvas[i, j] = color
