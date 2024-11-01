@@ -12,7 +12,7 @@ def PBR_material_pipeline(canvas,
                          vertices,
                          obj,
                          fresnel_value,
-                         light_values,
+                         light_configs,
                          ax,
                          pixel_density = 10):
     """
