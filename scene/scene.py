@@ -261,6 +261,7 @@ class Scene:
 
         if mode is 'PBR':
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
+            print('total faces: ', sorted_vertices.shape)
             for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):
                 D_tex = obj['material'].get_diffuse_texture()
                 N_tex = obj['material'].get_normal_texture()
