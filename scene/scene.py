@@ -277,11 +277,6 @@ class Scene:
                                          light_configs,
                                          ax,
                                          pixel_density = self.pixel_density)
-                    
-                # Testing, remove
-                light_value = L
-                uv = obj['uv_map']
-                texture = obj['material'].get_diffuse_texture()
             ax.imshow(canvas)
 
         
