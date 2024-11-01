@@ -25,6 +25,7 @@ def PBR_material_pipeline(canvas,
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
     texture = mat[0]
+    texture /= 255
                            
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
