@@ -10,33 +10,28 @@ from Nirvana.config.config import *
 
 
 
-def PBR_pipeline_texture(canvas,
-                         face,
-                         texture,
-                         oa,
-                         normal_tex,
-                         roughness,
-                         gloss,
-                         uv,
-                         normal,
-                         view_direction,
-                         light_direction,
-                         H,
-                         fresnel_value,
-                         pixel_density):
-    # write code here
+def PBR_material_pipeline(canvas,
+                          vertices,
+                          uv,
+                          texture,
+                          light_value,
+                          ax,
+                          pixel_density=10):
+    """
+    Render a textured face with lighting onto the matplotlib axis `ax`.
+    vertices: 3x2 array of triangle vertices (in screen space).
+    uv: 3x2 array of UV coordinates for the vertices.
+    texture: The texture image to project onto the triangle.
+    light_value: 1x3 array of RGB light intensity values for the triangle.
+    ax: The matplotlib axis to render on.
+    pixel_density: The resolution of the pixels per unit area. (Default = 10)
+    """
+    texture = texture / 255
+    # Get the bounding box of the triangle
+    min_x, min_y = np.min(vertices, axis=0)
+    max_x, max_y = np.max(vertices, axis=0)
 
-    # Convert all textures to float before dividing by 255
-    texture = texture.astype(np.float32) / 255.0
-    oa = oa.astype(np.float32) / 255.0
-    normal_tex = normal_tex.astype(np.float32) / 255.0
-    roughness = roughness.astype(np.float32) / 255.0
-    gloss = gloss.astype(np.float32) / 255.0
-
-
-    min_x, min_y = np.min(face, axis=0)
-    max_x, max_y = np.max(face, axis=0)
-
+    # Ensure that we use integers for the number of samples
     num_samples_x = int(pixel_density * (max_x - min_x + 1))
     num_samples_y = int(pixel_density * (max_y - min_y + 1))
 
@@ -47,7 +42,7 @@ def PBR_pipeline_texture(canvas,
     for x in x_range:
         for y in y_range:
             p = np.array([x, y])
-            u, v, w = barycentric_coords(p, face[0], face[1], face[2])
+            u, v, w = barycentric_coords(p, vertices[0], vertices[1], vertices[2])
 
             # If the point is inside the triangle (u, v, w >= 0 and u + v + w == 1)
             if u >= 0 and v >= 0 and w >= 0:
@@ -64,33 +59,13 @@ def PBR_pipeline_texture(canvas,
                 tex_y = np.clip(tex_y, 0, texture.shape[0] - 1)
 
                 # Sample the color from the texture
-                diffuse_pix = texture[tex_y, tex_x]
-                oa_pix = oa[tex_y, tex_x]
-                normal_pix = normal_tex[tex_y, tex_x]
-                roughness_pix = roughness[tex_y, tex_x]
-                gloss_pix = gloss[tex_y, tex_x]
+                tex_color = texture[tex_y, tex_x]
 
-                PBR_shader_pix = cook_torrance_brdf(normal, 
-                                                    view_direction, 
-                                                    light_direction, 
-                                                    H, 
-                                                    0.2,          #roughness_pix, 
-                                                    0.2,          #gloss_pix, 
-                                                    fresnel_value)
-                #print('PBR Shader: ', PBR_shader_pix * 4)
-                
-                normal_pix = normal_pix * 2 - 1
-                normal_pix /= np.linalg.norm(normal_pix, axis = -1)
-                normal_pix = np.clip(np.sum(normal_pix * light_direction, axis=-1), 0, 1)
-                normal_pix = 1 - normal_pix
-                #print('normal with light direction: ', normal_pix)
+                # Apply lighting by modulating the texture color with the light value
+                final_color = tex_color * light_value
 
-                #diffuse_pix = diffuse_pix * PBR_shader_pix * normal_pix * oa_pix *10
-                #print('diffuse after OA PBR and normal: ', diffuse_pix)
+                # Ensure the final color stays within valid bounds [0, 1]
+                final_color = np.clip(final_color, 0, 1)
 
-                shade = np.dot(normal, light_direction.T) /2 + 0.5
-                final_color = np.clip(PBR_shader_pix, 0, 1)
-
+                # Plot the pixel
                 plot_pixel(canvas = canvas, x = x, y = y, color = final_color, x_scene = (-10, 10), y_scene = (-10, 10))
-
-    
