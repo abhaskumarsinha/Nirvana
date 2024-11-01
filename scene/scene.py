@@ -266,7 +266,7 @@ class Scene:
                     L = light.orientation
                     V = self._compute_view_vector(face_position)
                     N = normal
-                    H = light_direction + view_direction
+                    H = L + V
                     H /= np.linalg.norm(H)
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
