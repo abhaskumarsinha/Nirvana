@@ -35,7 +35,7 @@ def PBR_material_pipeline(canvas,
     L, V, N, H = light_configs   
     print('half angle: ', H)
     print('tangents: ', N)
-    print('face_color: ', cook_torrance_brdf(N, V, L, H, 0.2, 0.2, fresnel_value))
+    print('face_color: ', cook_torrance_brdf(N, V, L, H, 0.5, 0, fresnel_value))
 
     uv = obj['uv_map']
                            
@@ -74,7 +74,7 @@ def PBR_material_pipeline(canvas,
                 tex_color = texture[tex_y, tex_x]
 
                 # Apply lighting by modulating the texture color with the light value
-                final_color = cook_torrance_brdf(N, V, L, H, 0.2, 0.2, fresnel_value)
+                final_color = cook_torrance_brdf(N, V, L, H, 0.5, 0, fresnel_value)
 
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
