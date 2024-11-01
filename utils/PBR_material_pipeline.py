@@ -35,6 +35,7 @@ def PBR_material_pipeline(canvas,
     L, V, N, H = light_configs   
     print('half angle: ', H)
     print('tangents: ', N)
+    print('light: ', L)
 
     uv = obj['uv_map']
                            
