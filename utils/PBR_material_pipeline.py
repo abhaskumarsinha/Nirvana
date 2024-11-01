@@ -24,8 +24,13 @@ def PBR_material_pipeline(canvas,
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
                            
-    texture = obj['material'].get_diffuse_texture().astype(float)
-    texture /= 255
+    texture = obj['material'].get_diffuse_texture().astype(float) / 255
+    normal = obj['material'].get_normal_texture().astype(float) / 255
+    ao = obj['material'].get_ao_texture().astype(float) / 255
+    roughness = obj['material'].get_roughness_texture().astype(float) / 255
+    metallic = obj['material'].get_metallic_texture().astype(float) / 255
+    fresnel = self.fresnel_value
+    
 
     uv = obj['uv_map']
                            
