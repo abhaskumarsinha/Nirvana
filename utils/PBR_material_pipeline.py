@@ -26,6 +26,8 @@ def PBR_material_pipeline(canvas,
                            
     texture = obj['material'].get_diffuse_texture().astype(float)
     texture /= 255
+
+    uv = obj['uv_map']
                            
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
