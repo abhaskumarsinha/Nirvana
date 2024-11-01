@@ -8,15 +8,13 @@ from Nirvana.utils.PBR import *
 from Nirvana.config.config import *
 
 
-
-
 def PBR_material_pipeline(canvas,
-                          vertices,
-                          uv,
-                          texture,
-                          light_value,
-                          ax,
-                          pixel_density=10):
+                         vertices,
+                         uv,
+                         mat,
+                         light_values,
+                         ax,
+                         pixel_density = 10):
     """
     Render a textured face with lighting onto the matplotlib axis `ax`.
     vertices: 3x2 array of triangle vertices (in screen space).
@@ -26,7 +24,8 @@ def PBR_material_pipeline(canvas,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
-    texture = texture / 255
+    texture = mat[0]
+                           
     # Get the bounding box of the triangle
     min_x, min_y = np.min(vertices, axis=0)
     max_x, max_y = np.max(vertices, axis=0)
