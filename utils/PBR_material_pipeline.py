@@ -11,6 +11,7 @@ from Nirvana.config.config import *
 def PBR_material_pipeline(canvas,
                          vertices,
                          obj,
+                         fresnel_value,
                          light_values,
                          ax,
                          pixel_density = 10):
@@ -29,7 +30,7 @@ def PBR_material_pipeline(canvas,
     ao = obj['material'].get_ao_texture().astype(float) / 255
     roughness = obj['material'].get_roughness_texture().astype(float) / 255
     metallic = obj['material'].get_metallic_texture().astype(float) / 255
-    fresnel = self.fresnel_value
+    fresnel = fresnel_value
     
 
     uv = obj['uv_map']
