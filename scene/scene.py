@@ -270,6 +270,9 @@ class Scene:
                     H /= np.linalg.norm(H)
                     light_configs = (L, V, N, H)
 
+                    print('half angle: ', H)
+                    print('tangents: ', normal)
+
                     PBR_material_pipeline(canvas,
                                          face,
                                          obj,
@@ -289,6 +292,9 @@ class Scene:
 
                     H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
                     H /= np.linalg.norm(H)
+
+                    print('half angle: ', H)
+                    print('tangents: ', face_tangents)
 
                     face_color += cook_torrance_brdf(face_tangents, 
                                                      view_direction, 
