@@ -80,4 +80,4 @@ def PBR_material_pipeline(canvas,
                 final_color = np.clip(final_color, 0, 1)
 
                 # Plot the pixel
-                plot_pixel(canvas = canvas, x = x, y = y, color = final_color, x_scene = (-10, 10), y_scene = (-10, 10))
+                plot_pixel(canvas = canvas, x = y, y = x, color = final_color, x_scene = (-10, 10), y_scene = (-10, 10))
