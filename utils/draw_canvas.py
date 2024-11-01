@@ -1,7 +1,7 @@
 import numpy as np
 
 def plot_pixel(canvas, x, y, color, x_scene=(-10, 10), y_scene=(-10, 10), 
-               upside_down=True, left_right=False):
+               upside_down=False, left_right=True):
     """
     Plots a single point in a given canvas array of specified resolution,
     with options to flip the y-axis (upside-down) and/or the x-axis (left-right).
