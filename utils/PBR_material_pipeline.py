@@ -24,7 +24,7 @@ def PBR_material_pipeline(canvas,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
-    texture = mat[0]
+    texture = mat[0].astype(float)
     texture /= 255
                            
     # Get the bounding box of the triangle
