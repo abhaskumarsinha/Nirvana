@@ -273,6 +273,7 @@ class Scene:
                     PBR_material_pipeline(canvas,
                                          face,
                                          obj,
+                                         self.fresnel_value,
                                          light_configs,
                                          ax,
                                          pixel_density = self.pixel_density)
