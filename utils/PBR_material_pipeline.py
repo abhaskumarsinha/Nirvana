@@ -10,8 +10,7 @@ from Nirvana.config.config import *
 
 def PBR_material_pipeline(canvas,
                          vertices,
-                         uv,
-                         mat,
+                         obj,
                          light_values,
                          ax,
                          pixel_density = 10):
@@ -24,7 +23,8 @@ def PBR_material_pipeline(canvas,
     ax: The matplotlib axis to render on.
     pixel_density: The resolution of the pixels per unit area. (Default = 10)
     """
-    texture = mat['diffuse'].astype(float)
+                           
+    texture = obj['material'].get_diffuse_texture()
     texture /= 255
                            
     # Get the bounding box of the triangle
