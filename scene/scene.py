@@ -260,33 +260,14 @@ class Scene:
             ax.imshow(canvas)
 
         if mode is 'PBR':
-            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
-                face_color = 0
-                for light in lights:
-                    light_direction = light.orientation
-                    view_direction = self._compute_view_vector(face_position)
+            canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
+            for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
+                uv = obj['uv_map']
+                texture = obj['material'].get_diffuse_texture()
+                lambert_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
+            ax.imshow(canvas)
 
-                    H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
-                    H /= np.linalg.norm(H)
-
-                    face_color += cook_torrance_brdf(face_tangents, 
-                                                     view_direction, 
-                                                     light_direction, 
-                                                     H, 
-                                                     self.distribution_roughness, 
-                                                     self.geometry_roughness, 
-                                                     self.fresnel_value)
-
-                # Now clip the values to [0, 1] and plot
-                face_color = np.clip(face_color, 0, 1)
-                polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
-                ax.add_patch(polygon)
-            ax.set_xlim(-10, 10)
-            ax.set_ylim(-10, 10)
-                    
-                    
-                
-
+        
         if mode is 'PBR_solidface':
             for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
                 face_color = 0
