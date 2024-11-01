@@ -262,14 +262,15 @@ class Scene:
         if mode is 'PBR':
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):
-                D_tex = obj['material'].get_diffuse_texture()
-                N_tex = obj['material'].get_normal_texture()
-                OA_tex = obj['material'].get_ao_texture()
-                R_tex = obj['material'].get_roughness_texture()
-                G_tex = obj['material'].get_metallic_texture()
+                mat = {
+                    "diffuse": obj['material'].get_diffuse_texture(),
+                    "normal": obj['material'].get_normal_texture(),
+                    "ao": obj['material'].get_ao_texture(),
+                    "roughness": obj['material'].get_roughness_texture(),
+                    "metallic": obj['material'].get_metallic_texture(),
+                    "fresnel": self.fresnel_value
+                }
 
-                mat = (D_tex, N_tex, OA_tex, R_tex, G_tex, self.fresnel_value)
-                print('Mat len', len(mat))
 
                 uv = obj['uv_map']
                 
