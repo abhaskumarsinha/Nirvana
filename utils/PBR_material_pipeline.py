@@ -34,7 +34,7 @@ def PBR_material_pipeline(canvas,
     fresnel = fresnel_value
 
     L, V, N, H = light_configs   
-    N = obj['tangent'] * (-1)
+    N = obj['tangent']
 
     uv = obj['uv_map']
                            
