@@ -4,7 +4,6 @@ import numpy as np
 from Nirvana.utils.barycentric_function import *
 from Nirvana.utils.draw_canvas import *
 from Nirvana.utils.PBR import *
-from Nirvana.utils.GGX_Distribution import *
 
 from Nirvana.config.config import *
 
@@ -34,7 +33,6 @@ def PBR_material_pipeline(canvas,
     fresnel = fresnel_value
 
     L, V, N, H = light_configs   
-    H *= (-1)
 
     uv = obj['uv_map']
                            
@@ -73,8 +71,7 @@ def PBR_material_pipeline(canvas,
                 tex_color = texture[tex_y, tex_x]
 
                 # Apply lighting by modulating the texture color with the light value
-                NdotH = np.dot(N, H.T)
-                final_color = ggx_distribution(NdotH, 0.2)
+                final_color = cook_torrance_brdf(N, V, L, H, 0.2, 0.2, fresnel_value) 
 
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
