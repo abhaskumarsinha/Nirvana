@@ -33,7 +33,8 @@ def PBR_material_pipeline(canvas,
     metallic = obj['material'].get_metallic_texture().astype(float) / 255
     fresnel = fresnel_value
 
-    L, V, N, H = light_configs    
+    L, V, H = light_configs   
+    N = obj['tangent']
 
     uv = obj['uv_map']
                            
