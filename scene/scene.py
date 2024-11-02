@@ -279,7 +279,7 @@ class Scene:
                                          pixel_density = self.pixel_density)
                     canvas += spec_canvas - 1
                     canvas = np.clip(canvas, 0, 1)
-            ax.imshow(canvas)
+            ax.imshow(canvas*10)
 
         
         if mode is 'PBR_solidface':
