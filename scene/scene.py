@@ -260,7 +260,7 @@ class Scene:
             ax.imshow(canvas)
 
         if mode is 'PBR':
-            canvas = np.zeroes((self.render_resolution[0], self.render_resolution[1], 3))
+            canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):                
                 for light in lights:
                     spec_canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
@@ -277,7 +277,7 @@ class Scene:
                                          light_configs,
                                          ax,
                                          pixel_density = self.pixel_density)
-                    canvas += spec_canvas
+                    canvas += spec_canvas - 1
                     canvas = np.clip(canvas, 0, 1)
             ax.imshow(canvas)
 
