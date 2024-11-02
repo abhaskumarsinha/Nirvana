@@ -263,19 +263,22 @@ class Scene:
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):                
                 for light in lights:
+                    spec_canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
                     L = light.orientation
                     V = self._compute_view_vector(face_position)
                     N = normal
                     H = L + V
                     H /= np.linalg.norm(H)
                     light_configs = (L, V, N, H)
-                    PBR_material_pipeline(canvas,
+                    PBR_material_pipeline(spec_canvas,
                                          face,
                                          obj,
                                          self.fresnel_value,
                                          light_configs,
                                          ax,
                                          pixel_density = self.pixel_density)
+                    canvas += spec_canvas
+                    canvas = np.clip(canvas, 0, 1)
             ax.imshow(canvas)
 
         
