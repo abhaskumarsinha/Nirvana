@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import imageio
-import tqdm from tqdm
+from tqdm from tqdm
 
 from Nirvana.camera.camera import *
 from Nirvana.lights.light import *
