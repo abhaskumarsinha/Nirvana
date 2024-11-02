@@ -298,9 +298,6 @@ class Scene:
                     H = light_direction + view_direction # (My view dir + light dir)/|My view dir + light dir = Half view
                     H /= np.linalg.norm(H)
 
-                    print('half angle: ', H)
-                    print('tangents: ', face_tangents)
-
                     face_color += cook_torrance_brdf(face_tangents, 
                                                      view_direction, 
                                                      light_direction, 
@@ -311,7 +308,6 @@ class Scene:
 
                 # Now clip the values to [0, 1] and plot
                 face_color = np.clip(face_color, 0, 1)
-                print('face color: ', face_color)
                 polygon = patches.Polygon(face, closed=True, facecolor=(face_color, face_color, face_color), alpha=1)
                 ax.add_patch(polygon)
             ax.set_xlim(-10, 10)
