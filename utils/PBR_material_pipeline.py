@@ -39,7 +39,7 @@ def PBR_material_pipeline(canvas,
     
     normal_rescaled = (normal * 2) - 1
     dot_product = np.einsum('ijk,k->ij', normal_rescaled, L)
-    shadow_intensity = np.clip(dot_product, 0, 1) / 10
+    shadow_intensity = np.clip(dot_product, 0, 1)
 
 
     uv = obj['uv_map']
