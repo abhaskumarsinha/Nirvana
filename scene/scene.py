@@ -284,7 +284,8 @@ class Scene:
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 lambert_pipeline(canvas_diff, face, uv, texture, light_value, ax, self.pixel_density)
-            ax.imshow(canvas + canvas_diff)
+            final_canvas = np.clip(canvas + canvas_diff, 0, 1)
+            ax.imshow(final_canvas)
 
         
         if mode is 'PBR_solidface':
