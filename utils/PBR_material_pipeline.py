@@ -86,7 +86,6 @@ def PBR_material_pipeline(canvas,
                 final_color = cook_torrance_brdf(N, V, L, H, 0.5, 0.5, fresnel_value)
                 final_color += shadow
                 final_color *= AO_shadow
-                final_color += tex_color
                 
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
