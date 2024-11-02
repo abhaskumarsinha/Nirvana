@@ -83,7 +83,7 @@ def PBR_material_pipeline(canvas,
                 G = metallic[tex_y, tex_x]
                 shadow = shadow_intensity[tex_y, tex_x]
                 AO_shadow = ao[tex_y, tex_x]
-                final_color = cook_torrance_brdf(N, V, L, H, 0.5, 0.5, fresnel_value) * 100
+                final_color = cook_torrance_brdf(N, V, L, H, 0.5, 0.5, fresnel_value) * 10
                 #final_color *= tex_color
                 #final_color *= shadow
                 #final_color *= AO_shadow
