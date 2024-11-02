@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import imageio
+import tqdm from tqdm
 
 from Nirvana.camera.camera import *
 from Nirvana.lights.light import *
@@ -236,7 +237,7 @@ class Scene:
 
         # Draw solid faces if requested
         if mode is 'solidface':
-            for face, light_value in zip(sorted_vertices, sorted_light_intensity):
+            for face, light_value in tqdm(zip(sorted_vertices, sorted_light_intensity)):
                 polygon = patches.Polygon(face, closed=True, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
             ax.set_xlim(-10, 10)
@@ -244,7 +245,7 @@ class Scene:
 
         # Draw wireframes if requested
         if mode is 'wireframe':
-            for face, light_value in zip(sorted_vertices, sorted_light_intensity):
+            for face, light_value in tqdm(zip(sorted_vertices, sorted_light_intensity)):
                 polygon = patches.Polygon(face, closed=True, edgecolor=wireframe_color, facecolor=light_value, alpha=1)
                 ax.add_patch(polygon)
             ax.set_xlim(-10, 10)
@@ -253,7 +254,7 @@ class Scene:
         # Handle materials rendering if needed
         if mode is 'lambert':
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
-            for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
+            for face, obj, light_value in tqdm(zip(sorted_vertices, sorted_objects, sorted_light_intensity)):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 lambert_pipeline(canvas, face, uv, texture, light_value, ax, self.pixel_density)
@@ -261,7 +262,7 @@ class Scene:
 
         if mode is 'PBR':
             canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
-            for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):                
+            for face, obj, face_position, normal in tqdm(zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents)):                
                 for light in lights:
                     spec_canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
                     L = light.orientation
@@ -280,7 +281,7 @@ class Scene:
                     canvas += spec_canvas - 1
                     canvas = np.clip(canvas, 0, 1)
             canvas_diff = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
-            for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
+            for face, obj, light_value in tqdm(zip(sorted_vertices, sorted_objects, sorted_light_intensity)):
                 uv = obj['uv_map']
                 texture = obj['material'].get_diffuse_texture()
                 lambert_pipeline(canvas_diff, face, uv, texture, light_value, ax, self.pixel_density)
@@ -289,7 +290,7 @@ class Scene:
 
         
         if mode is 'PBR_solidface':
-            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+            for face, face_tangents, face_position in tqdm(zip(sorted_vertices, sorted_tangents, sorted_face_positions)):
                 face_color = 0
                 for light in lights:
                     light_direction = light.orientation
@@ -314,7 +315,7 @@ class Scene:
             ax.set_ylim(-10, 10)
 
         if mode is 'GGX_Distribution_solidface':
-            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+            for face, face_tangents, face_position in tqdm(zip(sorted_vertices, sorted_tangents, sorted_face_positions)):
                 face_color = 0
                 for light in lights:
                     light_direction = light.orientation
@@ -336,7 +337,7 @@ class Scene:
             ax.set_ylim(-10, 10)
 
         if mode is 'GGX_Geometry_solidface':
-            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+            for face, face_tangents, face_position in tqdm(zip(sorted_vertices, sorted_tangents, sorted_face_positions)):
                 face_color = 0
                 for light in lights:
                     light_direction = light.orientation
@@ -353,7 +354,7 @@ class Scene:
             ax.set_ylim(-10, 10)
 
         if mode is 'schlick_fresnel':
-            for face, face_tangents, face_position in zip(sorted_vertices, sorted_tangents, sorted_face_positions):
+            for face, face_tangents, face_position in tqdm(zip(sorted_vertices, sorted_tangents, sorted_face_positions)):
                 face_color = 0
                 for light in lights:
                     light_direction = light.orientation
