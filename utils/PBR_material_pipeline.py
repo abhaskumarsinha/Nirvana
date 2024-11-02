@@ -36,10 +36,10 @@ def PBR_material_pipeline(canvas,
     print('half angle: ', H)
     print('tangents: ', N)
     print('face_color: ', cook_torrance_brdf(N, V, L, H, 0.5, 0, fresnel_value))
-
+    
     normal_rescaled = (normal * 2) - 1
     dot_product = np.einsum('ijk,k->ij', normal_rescaled, L)
-    shadow_intensity = np.clip(dot_product, 0, 1)
+    shadow_intensity = np.clip(dot_product, 0, 1) / 10
 
 
     uv = obj['uv_map']
@@ -85,7 +85,7 @@ def PBR_material_pipeline(canvas,
                 AO_shadow = ao[tex_y, tex_x]
                 final_color = cook_torrance_brdf(N, V, L, H, 0.5, 0.5, fresnel_value) * 5
                 #final_color *= tex_color
-                #final_color *= (shadow) * 15
+                final_color *= shadow
                 final_color *= AO_shadow
                 #final_color *= 4
                 
