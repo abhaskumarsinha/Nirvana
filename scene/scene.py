@@ -260,7 +260,7 @@ class Scene:
             ax.imshow(canvas)
 
         if mode is 'PBR':
-            canvas = np.zeros((self.render_resolution[0], self.render_resolution[1], 3))
+            canvas = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
             for face, obj, face_position, normal in zip(sorted_vertices, sorted_objects, sorted_face_positions, sorted_tangents):                
                 for light in lights:
                     L = light.orientation
