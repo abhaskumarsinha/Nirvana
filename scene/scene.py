@@ -279,7 +279,12 @@ class Scene:
                                          pixel_density = self.pixel_density)
                     canvas += spec_canvas - 1
                     canvas = np.clip(canvas, 0, 1)
-            ax.imshow(canvas*10)
+            canvas_diff = np.ones((self.render_resolution[0], self.render_resolution[1], 3))
+            for face, obj, light_value in zip(sorted_vertices, sorted_objects, sorted_light_intensity):
+                uv = obj['uv_map']
+                texture = obj['material'].get_diffuse_texture()
+                lambert_pipeline(canvas_diff, face, uv, texture, light_value, ax, self.pixel_density)
+            ax.imshow(canvas + canvas_diff)
 
         
         if mode is 'PBR_solidface':
