@@ -87,7 +87,6 @@ def PBR_material_pipeline(canvas,
                 final_color *= tex_color
                 final_color += shadow
                 final_color *= AO_shadow
-                final_color *= 5
                 
                 # Ensure the final color stays within valid bounds [0, 1]
                 final_color = np.clip(final_color, 0, 1)
