@@ -267,7 +267,7 @@ class Scene:
         pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
         # Set up OpenGL perspective
         gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-        glTranslatef(0.0, 0.0, -5.0) # Not sure why it is here...
+        glTranslatef(0.0, 0.0, -10.0) # Not sure why it is here...
 
         vertices, faces = self.objects['defaultCube'].get_vertices(), self.objects['defaultCube'].get_faces()
         normals = self.objects['defaultCube'].get_tangents()
@@ -275,6 +275,8 @@ class Scene:
 
 
         if mode is 'wireframe':
+            vertices, faces = self.objects['defaultCube'].get_vertices(), self.objects['defaultCube'].get_faces()
+            normals = self.objects['defaultCube'].get_tangents()
             # Main rendering loop
             running = True
             while running:
@@ -286,6 +288,9 @@ class Scene:
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
                 draw_wireframe(vertices, faces)
+                for obj in self.objects.values():
+                    vertices, faces = obj.get_vertices(), obj.get_faces()
+                    draw_wireframe(vertices, faces)
 
                 # Swap buffers to display the result
                 pygame.display.flip()
@@ -294,6 +299,7 @@ class Scene:
             pygame.quit()
 
         if mode is 'solid':
+            light_ = list(self.lights.values())
             # Enable depth testing
             glEnable(GL_DEPTH_TEST)
             
@@ -306,8 +312,11 @@ class Scene:
         
                 # Clear the screen and render the wireframe
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    
-                draw_solid_faces(vertices, faces, normals, light_)
+
+                for obj in self.objects.values():
+                    vertices, faces = obj.get_vertices(), obj.get_faces()
+                    normals = obj.get_tangents()
+                    draw_solid_faces(vertices, faces, normals, light_)
 
                 # Swap buffers to display the result
                 pygame.display.flip()
