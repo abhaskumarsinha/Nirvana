@@ -4,19 +4,21 @@ import matplotlib.patches as patches
 import imageio
 from tqdm import tqdm
 
-
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from OpenGL.GL.shaders import compileShader, compileProgram
 
 from Nirvana.camera.camera import *
 from Nirvana.lights.light import *
 from Nirvana.objects.base import *
 from Nirvana.utils import *
 
+
 # Move the function below to a different file
+# GPU FUNCTIONS! DON'T TOUCH!
 def draw_wireframe(vertices, faces):
     """
     Draw the wireframe of a 3D shape.
@@ -78,6 +80,7 @@ def draw_solid_faces(vertices, faces, normals, lights):
     glEnd()
 
 
+
 class Scene:
     def __init__(self):
         self.Camera = Camera
@@ -103,6 +106,29 @@ class Scene:
 
 
         self.cameras['_globalCamera'] = Camera()
+
+    # GPU FUNCTIONS! DON'T TOUCH! =============================================================================
+
+    def get_light_data(self):
+        MAX_LIGHTS = 32  # Maximum number of lights
+    
+        # Initialize arrays for light properties
+        light_colors = np.zeros((MAX_LIGHTS, 3), dtype=np.float32)  # Shape: (MAX_LIGHTS, 3)
+        light_intensities = np.zeros(MAX_LIGHTS, dtype=np.float32)  # Shape: (MAX_LIGHTS,)
+        light_orientations = np.zeros((MAX_LIGHTS, 3), dtype=np.float32)  # Shape: (MAX_LIGHTS, 3)
+    
+        # Get the number of active lights
+        num_lights = min(len(self.lights), MAX_LIGHTS)
+    
+        # Fill the light properties arrays
+        for i, light in enumerate(list(self.lights.values())[:num_lights]):
+            light_colors[i] = light.color.flatten()  # Assuming color is a (1, 3) numpy array
+            light_intensities[i] = light.intensity  # Intensity is a scalar
+            light_orientations[i] = light.orientation.flatten()  # Assuming orientation is a (1, 3) numpy array
+
+        return light_colors, light_intensities, light_orientations, num_lights
+
+    # =========================================================================================================
     
     def _compute_view_vector(self, P):
         V = -P  # Camera is at (0, 0, 0), so view vector is -P
@@ -268,10 +294,13 @@ class Scene:
         # Set up OpenGL perspective
         gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
         glTranslatef(0.0, 0.0, -10.0) # Not sure why it is here...
+        glEnable(GL_DEPTH_TEST)
 
         vertices, faces = self.objects['defaultCube'].get_vertices(), self.objects['defaultCube'].get_faces()
         normals = self.objects['defaultCube'].get_tangents()
+        uv = self.objects['defaultCube'].uv
         light_ = list(self.lights.values())
+        light_colors, light_intensities, light_orientations, num_lights = self.get_light_data()
 
 
         if mode is 'wireframe':
@@ -323,7 +352,213 @@ class Scene:
                 pygame.time.wait(10)
 
             pygame.quit()
+
+        if mode is 'lambert':
+            
+            # Shader Code for First Triangle
+            vertex_shader = """
+
+            varying vec2 tex_coords;
+            varying vec3 frag_normal;
+
+            void main() {
+                // Pass texture coordinates to the fragment shader
+                tex_coords = gl_MultiTexCoord0.xy;
+
+                // Pass the normal (transformed to eye space) to the fragment shader
+                frag_normal = normalize(gl_NormalMatrix * gl_Normal);
+
+                // Compute vertex position using the legacy matrix
+                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+            }
+            """
+
+            
+            fragment_shader = """
+
+            #define MAX_LIGHTS 32
+
+            uniform sampler2D texture_sampler;
+            uniform sampler2D normal_map_sampler;   // Normal map
+            uniform sampler2D occlusion_map_sampler; // Occlusion map
+
+            uniform vec3 light_colors[MAX_LIGHTS];      // Colors for each light
+            uniform float light_intensities[MAX_LIGHTS]; // Intensities for each light
+            uniform vec3 light_directions[MAX_LIGHTS];  // Directions for each light
+            uniform int num_lights;  // The number of active lights
+
+            // Flags to check if normal map and occlusion map are provided
+            uniform bool use_normal_map;   // If true, normal map is applied
+            uniform bool use_occlusion_map; // If true, occlusion map is applied
+
+            varying vec2 tex_coords;
+            varying vec3 frag_normal;  // Normal from the vertex shader
+
+            void main() {
+                // Normalize the interpolated normal from the vertex shader
+                vec3 norm_frag_normal = normalize(frag_normal);
+
+                // Apply the normal map if enabled
+                if (use_normal_map) {
+                    vec3 normal_map = texture2D(normal_map_sampler, tex_coords).rgb;
+                    normal_map = normalize(normal_map * 2.0 - 1.0); // Convert from [0, 1] to [-1, 1]
+                    norm_frag_normal = normalize(norm_frag_normal + normal_map);
+                }
+
+                // Initialize the fragment color contribution from lighting
+                vec3 light_contribution = vec3(0.0);
+
+                // Iterate over all lights
+                for (int i = 0; i < num_lights; i++) {
+                    vec3 norm_light_dir = normalize(light_directions[i]);
         
+                    // Calculate the diffuse shading term
+                    float diffuse_intensity = max(dot(norm_frag_normal, norm_light_dir), 0.0);
+
+                    // Add this light's contribution
+                    light_contribution += light_colors[i] * light_intensities[i] * diffuse_intensity;
+                }
+
+                // Sample the occlusion map if enabled
+                float occlusion = use_occlusion_map 
+                                  ? texture2D(occlusion_map_sampler, tex_coords).r 
+                                  : 1.0;
+
+                // Sample the base texture
+                vec4 tex_color = texture2D(texture_sampler, tex_coords);
+
+                // Final color calculation: texture color modulated by lighting and occlusion
+                vec3 final_color = tex_color.rgb * light_contribution * occlusion;
+
+                // Output the final color with the texture alpha
+                gl_FragColor = vec4(final_color, tex_color.a);
+            }
+            """
+
+            # Compile Shader Programs
+            shader_program = compileProgram(
+                compileShader(vertex_shader, GL_VERTEX_SHADER),
+                compileShader(fragment_shader, GL_FRAGMENT_SHADER)
+            )
+
+            texture_ids_list = []
+
+
+            for idx, obj in enumerate(self.objects.values()):
+                # Load Texture Image
+                texture_image = imageio.imread("diffusion.png")
+                texture_id = glGenTextures(1)
+                glBindTexture(GL_TEXTURE_2D, texture_id)
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_image.shape[1], texture_image.shape[0], 0, GL_RGB, GL_UNSIGNED_BYTE, texture_image)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+                glBindTexture(GL_TEXTURE_2D, 0)
+
+
+                # Load the normal map
+                normal_map = imageio.imread("normal.png")
+                normal_map_id = glGenTextures(1)
+                glBindTexture(GL_TEXTURE_2D, normal_map_id)
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, normal_map.shape[1], normal_map.shape[0], 0, GL_RGB, GL_UNSIGNED_BYTE, normal_map)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+                glBindTexture(GL_TEXTURE_2D, 0)
+
+                # Load the occlusion map
+                occlusion_map = imageio.imread("ao.png")
+                occlusion_map_id = glGenTextures(1)
+                glBindTexture(GL_TEXTURE_2D, occlusion_map_id)
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, occlusion_map.shape[1], occlusion_map.shape[0], 0, GL_RGB, GL_UNSIGNED_BYTE, occlusion_map)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+                glBindTexture(GL_TEXTURE_2D, 0)
+
+                texture_ids_list.append((texture_id, normal_map_id, occlusion_map_id))
+
+            
+            running = True
+            while running:
+                # Event Handling
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            running = False
+                
+                # Clear Screen
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+                for idx, obj in enumerate(self.objects.values()):
+                    vertices = obj.get_vertices()
+                    faces = obj.get_faces()
+                    uv = obj.uv
+                    normal = obj.get_tangents()
+
+
+                    glPushMatrix()
+                    glUseProgram(shader_program)
+
+                    # Assuming you have the shader program bound (e.g., glUseProgram(program))
+                    use_normal_map_location = glGetUniformLocation(shader_program, "use_normal_map")
+                    use_occlusion_map_location = glGetUniformLocation(shader_program, "use_occlusion_map")
+
+                    # Set the flags to true (1 for true)
+                    glUniform1i(use_normal_map_location, 1)
+                    glUniform1i(use_occlusion_map_location, 1)
+
+                    t, n, o = texture_ids_list[idx]
+
+                    glActiveTexture(GL_TEXTURE0)
+                    glBindTexture(GL_TEXTURE_2D, t)
+                    glUniform1i(glGetUniformLocation(shader_program, "texture_sampler"), 0)
+
+
+                    glActiveTexture(GL_TEXTURE1)
+                    glBindTexture(GL_TEXTURE_2D, n)  # Normal map
+                    glUniform1i(glGetUniformLocation(shader_program, "normal_map_sampler"), 1)
+
+                    glActiveTexture(GL_TEXTURE2)
+                    glBindTexture(GL_TEXTURE_2D, o)  # Occlusion map
+                    glUniform1i(glGetUniformLocation(shader_program, "occlusion_map_sampler"), 2)
+
+
+                    # Pass the num_lights uniform to the shader
+                    glUseProgram(shader_program)
+                    glUniform1i(glGetUniformLocation(shader_program, "num_lights"), num_lights)
+
+                    # Pass the light properties to the shader
+                    for i in range(num_lights):
+                        glUniform3fv(glGetUniformLocation(shader_program, f"light_colors[{i}]"), 1, light_colors[i])
+                        glUniform1f(glGetUniformLocation(shader_program, f"light_intensities[{i}]"), light_intensities[i])
+                        glUniform3fv(glGetUniformLocation(shader_program, f"light_directions[{i}]"), 1, light_orientations[i])
+
+
+                    for face_index, face in enumerate(faces):
+                        glBegin(GL_TRIANGLES)
+                        glNormal3fv(normals[face_index])
+                        for vertex_index, uv_coord in zip(face, uv[face_index]):
+                            glTexCoord2f(*uv_coord)  # Pass the UV coordinate (x, y) to the shader
+                            glVertex3fv(vertices[vertex_index])  # Pass the vertex position to OpenGL
+                        glEnd()
+
+
+                    glUseProgram(0)
+                    glPopMatrix()
+
+                pygame.display.flip()
+                pygame.time.wait(10)
+
+
+            pygame.quit()
+
+
 
     def render(self, mode = 'wireframe'):
                 
