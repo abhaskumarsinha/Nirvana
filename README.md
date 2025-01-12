@@ -50,7 +50,7 @@ Artist Credits: [[`jrgubric`]](https://free3d.com/user/jrgubric)
 
 ## Getting Started
 
-#### 1. Render a cube with a diffuse texture and lambert shading
+#### 1. Render a cube with a diffuse texture and lambert shading on CPU
 ```python
 # Importing core classes for objects, lighting, camera, scene, and materials
 from Nirvana.objects import *
@@ -139,25 +139,49 @@ scene.set_active_camera('cam')
 scene.render('solidface').savefig('./container_rendering.jpg', dpi=500)  # Save high-resolution render
 ```
 
-#### 3. PBR Solid face rendering
+#### 3. PBR Rendering on GPU (OpenGL 2.x) using HDRi Lighting
 
 ```python
+# Importing core classes for objects, lighting, camera, scene, and materials
 from Nirvana.objects import *
 from Nirvana.lights import *
 from Nirvana.camera import *
 from Nirvana.scene import *
 from Nirvana.material import *
 
+# Download the material from Free PBR website: https://freepbr.com/product/ravine-cliff-pbr/
+# Use blender format and extract the contents of the zip `ravine-cliff-bl` in the script folder.
+
+# Initialize a base material with a texture
+nirvana_texture = BaseMaterial(diffuse_path = 'ravine-cliff-bl/ravine-cliff_albedo.png', 
+                               normal_path = 'ravine-cliff-bl/ravine-cliff_normal-ogl.png', 
+                               ao_path = 'ravine-cliff-bl/ravine-cliff_ao.png',
+                               roughness_path = 'ravine-cliff-bl/ravine-cliff_roughness.png',
+                               metallic_path = 'ravine-cliff-bl/ravine-cliff_metallic.png',
+                                load_all_channels = True)
+
 # Create a cube object and apply transformations
 cube1 = cube.Cube()
 cube1.rotate(10, 'x')               # Rotate cube by 10 degrees along the x-axis
 cube1.rotate(10, 'y')               # Rotate cube by 10 degrees along the y-axis
+cube1.scale(2)
 cube1.triangulate()                 # Convert cube faces into triangles for rendering
 cube1.calculate_tangents()          # Calculate tangents for proper texture mapping
+cube1.set_material(nirvana_texture) # Apply the texture material to the cube
+
+# Create a cube object and apply transformations
+cube2 = cube.Cube()
+cube2.rotate(10, 'x')               # Rotate cube by 10 degrees along the x-axis
+cube2.rotate(-10, 'y')               # Rotate cube by 10 degrees along the y-axis
+cube2.scale(2)
+cube2.translate(2, 0, 0)
+cube2.triangulate()                 # Convert cube faces into triangles for rendering
+cube2.calculate_tangents()          # Calculate tangents for proper texture mapping
+cube2.set_material(nirvana_texture) # Apply the texture material to the cube
 
 # Create light sources to illuminate the scene
-sunlight = light.LightSource(orientation=(-0.5, -1, 0), color=(135, 206, 235))  # Primary sunlight with color
-sunlight2 = light.LightSource(orientation=(0.5, -1, 0.5), color=(1, 1, 1), intensity=0.2)  # Secondary light with low intensity
+sunlight = light.LightSource(orientation=(-0.5, 1, -1), color=(135, 206, 235), intensity = 2)  # Primary sunlight with color
+sunlight2 = light.LightSource(orientation=(0.5, -1, 0.5), color=(1, 1, 1), intensity = 1.5)  # Secondary light with low intensity
 
 # Set up the camera for the scene
 camera_ = camera.Camera(d=10, f=30)  # Position the camera with specified distance and focal length
@@ -165,18 +189,17 @@ camera_ = camera.Camera(d=10, f=30)  # Position the camera with specified distan
 # Create and configure the scene
 scene = scene.Scene()
 scene.register_object(cube1, 'defaultCube')  # Add cube to the scene with an identifier
+scene.register_object(cube2, 'Cub2')
 scene.register_object(sunlight, 'light')     # Register the main light source
 scene.register_object(sunlight2, 'light2')   # Register secondary light source
 scene.register_object(camera_, 'cam')        # Register camera in the scene
 scene.set_active_camera('cam')               # Set the active camera for rendering
 
+# Get HDR image file *.hdr from https://polyhaven.com/a/rogland_moonlit_night and place the file rogland_moonlit_night_2k.hdr
+# in the same script as the code location. Note, Nirvana supports ONLY *.hdr for now and no *.exr yet!
+scene.import_lights_to_scene(scene.load_lights_from_hdr('sky_light.hdr', intensity_factor=0.5, color_tuner = 0.6))
 
-scene.distribution_roughness = 0.5 # Surface roughness - Coal to Mirror varries
-scene.geometry_roughness = 0.7 # Metallic roughness - Plastic to metal varies
-scene.fresnel_value = 0.4 # Fresnel value - depends on refractive index
-
-
-scene.render('schlick_fresnel')  # Render in lambert shading mode and save as image
+scene.render_gpu('pbr')
 ```
 
 ## Project Name and Slogan
